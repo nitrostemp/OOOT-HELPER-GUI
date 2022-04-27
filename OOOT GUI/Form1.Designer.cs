@@ -195,7 +195,7 @@
             this.groupBox3.Size = new System.Drawing.Size(303, 73);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Commit info:";
+            this.groupBox3.Text = "Commit Info:";
             // 
             // Form1
             // 
