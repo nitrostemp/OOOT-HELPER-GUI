@@ -125,17 +125,27 @@ namespace OOOT_GUI
 
             string commit = "";
             string date = "";
+            string title = "";
 
+            // get commit id
             commit = lines.Where(x => x.StartsWith("commit ")).FirstOrDefault();
             if (!string.IsNullOrEmpty(commit))
                 commit = commit.Replace("commit ", "");
 
+            // get commit date
             date = lines.Where(x => x.StartsWith("Date:")).FirstOrDefault();
 
             if (string.IsNullOrEmpty(commit) || string.IsNullOrEmpty(date))
                 return errorString;
 
+            // get commit title
+            if (lines.Length > 3 && !string.IsNullOrEmpty(lines[4]))
+                title = lines[4];
+
+            // build string
             string result = "Commit: " + commit + "\n" + date;
+            if (!string.IsNullOrEmpty(title))
+                result += "\nTitle: " + title;
 
             return result;
         }
