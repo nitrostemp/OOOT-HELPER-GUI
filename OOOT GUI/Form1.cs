@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Linq;
 
 namespace OOOT_GUI
 {
@@ -28,28 +29,48 @@ namespace OOOT_GUI
             string strCmdDownload1 = "/C curl -LJO https://aka.ms/vs/17/release/vs_BuildTools.exe --output buildtoolinstall.exe";
             string strCmdDownload2 = "/C curl -LJO https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe --output pythoninstall.exe";
             string strCmdDownload3 = "/C curl -LJO https://github.com/git-for-windows/git/releases/download/v2.36.0.windows.1/Git-2.36.0-64-bit.exe --output gitinstall.exe";
-            Process.Start("CMD.exe", strCmdDownload1 + strCmdDownload2 + strCmdDownload3);
+            RunProcess(strCmdDownload1 + strCmdDownload2 + strCmdDownload3);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Process.Start("CMD.exe", "/C install.bat");
+            RunProcess("/C install.bat");
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Process.Start("CMD.exe", "/C pullgit.bat");
+            RunProcess("/C pullgit.bat");
             UpdateStatusLabel();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            Process.Start("CMD.exe", "/C compile.bat");
+            RunProcess("/C compile.bat");
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            Process.Start("CMD.exe", "/C copyrom.bat");
+            RunProcess("/C copyrom.bat");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            RunProcess("/C extract_assets.bat");
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            DoFullSetup();
+        }
+
+        private void DoFullSetup()
+        {
+            button3_Click(null, null); // download tools
+            button2_Click(null, null); // install tools
+            button1_Click(null, null); // clone repo
+            button6_Click(null, null); // copy rom
+            button7_Click(null, null); // extract assets
+            button5_Click(null, null); // compile
         }
 
         private void UpdateStatusLabel(object sender, EventArgs e)
@@ -64,7 +85,7 @@ namespace OOOT_GUI
             string output = p.StandardOutput.ReadToEnd();
             p.WaitForExit();
 
-            label1.Text = Helpers.ParseGitStatusString(output);
+            label1.Text = ParseGitStatusString(output);
         }
 
         private void UpdateStatusLabel()
@@ -72,9 +93,38 @@ namespace OOOT_GUI
             UpdateStatusLabel(null, null);
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void RunProcess(string command)
         {
-            Process.Start("CMD.exe", "/C extract_assets.bat");
+            Process p = new Process();
+            p.StartInfo.FileName = "CMD.exe";
+            p.StartInfo.Arguments = command;
+            p.Start();
+            p.WaitForExit();
+        }
+
+        private string ParseGitStatusString(string cmdOutput)
+        {
+            string errorString = "No OOOT repository found.";
+
+            string[] lines = cmdOutput.Split('\n');
+            if (lines == null || lines.Length == 0)
+                return errorString;
+
+            string commit = "";
+            string date = "";
+
+            commit = lines.Where(x => x.StartsWith("commit ")).FirstOrDefault();
+            if (!string.IsNullOrEmpty(commit))
+                commit = commit.Replace("commit ", "");
+
+            date = lines.Where(x => x.StartsWith("Date:")).FirstOrDefault();
+
+            if (string.IsNullOrEmpty(commit) || string.IsNullOrEmpty(date))
+                return errorString;
+
+            string result = "Commit: " + commit + "\n" + date;
+
+            return result;
         }
     }
 }
