@@ -1,0 +1,11 @@
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\bin\Debug\OOOT GUI.exe.config
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\bin\Debug\OOOT GUI.exe
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\bin\Debug\OOOT GUI.pdb
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.AssemblyReference.cache
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.SuggestedBindingRedirects.cache
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT_GUI.Form1.resources
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT_GUI.Properties.Resources.resources
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.GenerateResource.cache
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.CoreCompileInputs.cache
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT GUI.exe
+C:\Users\dgran\source\repos\OOOT GUI\OOOT GUI\obj\Debug\OOOT GUI.pdb
