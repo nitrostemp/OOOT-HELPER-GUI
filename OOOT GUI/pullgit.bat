@@ -1,0 +1,2 @@
+cd OOOT
+git pull
