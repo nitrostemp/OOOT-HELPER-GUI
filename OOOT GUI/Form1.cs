@@ -20,7 +20,7 @@ namespace OOOT_GUI
         private void button1_Click(object sender, EventArgs e)
         {
             string strCmdClone;
-            strCmdClone = "/C git clone --recursive -b dev https://github.com/blawar/ooot.git";
+            strCmdClone = "/C gitclone.bat";
             System.Diagnostics.Process.Start("CMD.exe", strCmdClone);
         }
 
