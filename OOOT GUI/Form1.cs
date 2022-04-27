@@ -13,7 +13,7 @@ namespace OOOT_GUI
             UpdateStatusLabel();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e) // Clone repository
         {
             Process p = new Process();
             p.StartInfo.FileName = "CMD.exe";
@@ -24,7 +24,7 @@ namespace OOOT_GUI
             p.WaitForExit();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e) // Download tools
         {
             string strCmdDownload1 = "/C curl -LJO https://aka.ms/vs/17/release/vs_BuildTools.exe --output buildtoolinstall.exe";
             string strCmdDownload2 = "/C curl -LJO https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe --output pythoninstall.exe";
@@ -32,45 +32,58 @@ namespace OOOT_GUI
             RunProcess(strCmdDownload1 + strCmdDownload2 + strCmdDownload3);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) // Install tools
         {
             RunProcess("/C install.bat");
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void button4_Click(object sender, EventArgs e) // Update repository
         {
             RunProcess("/C pullgit.bat");
             UpdateStatusLabel();
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void button5_Click(object sender, EventArgs e) // Compile
         {
+            if (checkBox1.Checked)
+                RunProcess("/C extract_assets.bat");
+
             RunProcess("/C compile.bat");
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void button6_Click(object sender, EventArgs e) // Copy ROM
         {
             RunProcess("/C copyrom.bat");
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void button7_Click(object sender, EventArgs e) // Extract assets
         {
             RunProcess("/C extract_assets.bat");
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void button8_Click(object sender, EventArgs e) // All-in-one
         {
-            DoFullSetup();
+            DoFullSetup(true);
         }
 
-        private void DoFullSetup()
+        private void button9_Click(object sender, EventArgs e) // Clone and compile
         {
-            button3_Click(null, null); // download tools
-            button2_Click(null, null); // install tools
+            DoFullSetup(false);
+        }
+
+        private void DoFullSetup(bool installTools)
+        {
+            if (installTools)
+            {
+                button3_Click(null, null); // download tools
+                button2_Click(null, null); // install tools
+            }
+
             button1_Click(null, null); // clone repo
             button6_Click(null, null); // copy rom
             button7_Click(null, null); // extract assets
-            button5_Click(null, null); // compile
+
+            RunProcess("/C compile.bat"); // compile
         }
 
         private void UpdateStatusLabel(object sender, EventArgs e)
