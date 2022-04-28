@@ -36,12 +36,14 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button10 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -90,9 +92,9 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(107, 77);
+            this.button5.Location = new System.Drawing.Point(183, 77);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(189, 23);
+            this.button5.Size = new System.Drawing.Size(113, 23);
             this.button5.TabIndex = 4;
             this.button5.Text = "Compile OOOT";
             this.button5.UseVisualStyleBackColor = true;
@@ -104,12 +106,13 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(289, 23);
             this.button6.TabIndex = 5;
-            this.button6.Text = "Copy PAL 1.0 ROM";
+            this.button6.Text = "Copy ROMs";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.comboBox1);
             this.groupBox1.Controls.Add(this.checkBox1);
             this.groupBox1.Controls.Add(this.button9);
             this.groupBox1.Controls.Add(this.button8);
@@ -120,6 +123,18 @@
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Builder:";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "PAL 1.0",
+            "EUR MQD"});
+            this.comboBox1.Location = new System.Drawing.Point(99, 79);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(78, 21);
+            this.comboBox1.TabIndex = 10;
+            this.comboBox1.Text = "PAL 1.0";
             // 
             // checkBox1
             // 
@@ -174,6 +189,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button10);
             this.groupBox2.Controls.Add(this.button4);
             this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.button7);
@@ -182,10 +198,20 @@
             this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Location = new System.Drawing.Point(13, 206);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(303, 195);
+            this.groupBox2.Size = new System.Drawing.Size(303, 228);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Scripts:";
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(6, 193);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(289, 23);
+            this.button10.TabIndex = 7;
+            this.button10.Text = "Run OOOT";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // groupBox3
             // 
@@ -201,7 +227,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 408);
+            this.ClientSize = new System.Drawing.Size(328, 442);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
@@ -209,7 +235,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.2";
+            this.Text = "OOOT BUILD GUI ver 0.3";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -235,6 +261,8 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Button button10;
     }
 }
 
