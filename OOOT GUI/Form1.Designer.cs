@@ -36,11 +36,11 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.button9 = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
@@ -121,6 +121,28 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Builder:";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(8, 81);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(93, 17);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "Extract Assets";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(6, 48);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(289, 23);
+            this.button9.TabIndex = 8;
+            this.button9.Text = "Clone and Compile OOOT";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
             // button8
             // 
             this.button8.Location = new System.Drawing.Point(6, 19);
@@ -149,28 +171,6 @@
             this.label1.Size = new System.Drawing.Size(44, 39);
             this.label1.TabIndex = 0;
             this.label1.Text = "Commit:\r\nDate:\r\nTitle:";
-            // 
-            // button9
-            // 
-            this.button9.Location = new System.Drawing.Point(6, 48);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(289, 23);
-            this.button9.TabIndex = 8;
-            this.button9.Text = "Clone and Compile OOOT";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(8, 81);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(93, 17);
-            this.checkBox1.TabIndex = 9;
-            this.checkBox1.Text = "Extract Assets";
-            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -209,7 +209,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI";
+            this.Text = "OOOT BUILD GUI ver 0.2";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
