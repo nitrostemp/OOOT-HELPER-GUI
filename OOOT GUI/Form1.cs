@@ -149,5 +149,10 @@ namespace OOOT_GUI
 
             return result;
         }
+
+        private void button10_Click(object sender, EventArgs e) //RUN OOT
+        {
+            RunProcess("/C runOOT.bat");
+        }
     }
 }
