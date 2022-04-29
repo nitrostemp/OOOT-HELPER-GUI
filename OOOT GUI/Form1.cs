@@ -10,9 +10,9 @@ namespace OOOT_GUI
 {
     public partial class Form1 : Form
     {
-        // Valid ROM Hashes
-        private string[] md5HashesPal = { "e040de91a74b61e3201db0e2323f768a", "f8ef2f873df415fc197f4a9837d7e353" };
-        private string[] md5HashesEurMqd = { "f751d1a097764e2337b1ac9ba1e27699", "ce96bd52cb092d8145fb875d089fa925" };
+        // Valid ROM Hashes (.z64, .n64, .v64)
+        private string[] md5HashesPal = { "e040de91a74b61e3201db0e2323f768a", "f8ef2f873df415fc197f4a9837d7e353", "9526b263b60577d8ed22fb7a33c2facd" };
+        private string[] md5HashesEurMqd = { "f751d1a097764e2337b1ac9ba1e27699", "ce96bd52cb092d8145fb875d089fa925", "cbd40c8fb47404678b97cba50d2af495" };
 
         public Form1()
         {
@@ -167,10 +167,11 @@ namespace OOOT_GUI
             bool isEurMqd = IsEurMqd();
             string path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
-            // get rom files (.z64 first, then .n64)
+            // get rom files (.z64 first, then .n64 and .v64)
             List<string> files = new List<string>();
             files.AddRange(Directory.GetFiles(path, "*.z64"));
             files.AddRange(Directory.GetFiles(path, "*.n64"));
+            files.AddRange(Directory.GetFiles(path, "*.v64"));
 
             if (files.Count > 0)
             {
