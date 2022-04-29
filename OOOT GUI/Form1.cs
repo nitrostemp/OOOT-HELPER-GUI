@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.IO;
 
 namespace OOOT_GUI
 {
     public partial class Form1 : Form
     {
+        // Valid ROM Hashes
+        private string[] md5HashesPal = { "e040de91a74b61e3201db0e2323f768a", "f8ef2f873df415fc197f4a9837d7e353" };
+        private string[] md5HashesEurMqd = { "f751d1a097764e2337b1ac9ba1e27699", "ce96bd52cb092d8145fb875d089fa925" };
+
         public Form1()
         {
             InitializeComponent();
@@ -46,19 +53,19 @@ namespace OOOT_GUI
         private void button5_Click(object sender, EventArgs e) // Compile
         {
             if (checkBox1.Checked)
-                RunProcess("/C extract_assets.bat");
+                RunProcess("/C extract_assets.bat" + GetRomVersionParameter());
 
             RunProcess("/C compile.bat");
         }
 
         private void button6_Click(object sender, EventArgs e) // Copy ROM
         {
-            RunProcess("/C copyrom.bat");
+            RunProcess("/C copyrom.bat" + GetRomVersionParameter() + GetRomFilename());
         }
 
         private void button7_Click(object sender, EventArgs e) // Extract assets
         {
-            RunProcess("/C extract_assets.bat");
+            RunProcess("/C extract_assets.bat" + GetRomVersionParameter());
         }
 
         private void button8_Click(object sender, EventArgs e) // All-in-one
@@ -69,6 +76,11 @@ namespace OOOT_GUI
         private void button9_Click(object sender, EventArgs e) // Clone and compile
         {
             DoFullSetup(false);
+        }
+
+        private void button10_Click(object sender, EventArgs e) // Run OOOT
+        {
+            RunProcess("/C runOOT.bat");
         }
 
         private void DoFullSetup(bool installTools)
@@ -150,9 +162,60 @@ namespace OOOT_GUI
             return result;
         }
 
-        private void button10_Click(object sender, EventArgs e) //RUN OOT
+        private string GetRomFilename()
         {
-            RunProcess("/C runOOT.bat");
+            bool isEurMqd = IsEurMqd();
+            string path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+
+            // get rom files (.z64 first, then .n64)
+            List<string> files = new List<string>();
+            files.AddRange(Directory.GetFiles(path, "*.z64"));
+            files.AddRange(Directory.GetFiles(path, "*.n64"));
+
+            if (files.Count > 0)
+            {
+                foreach (string file in files)
+                {
+                    string md5Hash = CalculateMD5(file);
+
+                    if (isEurMqd && md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && md5HashesPal.Contains(md5Hash))
+                        return " " + Path.GetFileName(file);
+                }
+            }
+
+            return "";
+        }
+
+        private string GetRomVersionParameter()
+        {
+            return IsEurMqd() ? " EUR_MQD" : " PAL_1.0";
+        }
+
+        private bool IsEurMqd()
+        {
+            return comboBox1.SelectedIndex == 1;
+        }
+
+        private string CalculateMD5(string filename)
+        {
+            if (string.IsNullOrEmpty(filename))
+                return "";
+
+            try
+            {
+                using (var md5 = MD5.Create())
+                {
+                    using (var stream = File.OpenRead(filename))
+                    {
+                        var hash = md5.ComputeHash(stream);
+                        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    }
+                }
+            }
+            catch
+            {
+                return "";
+            }
         }
     }
 }
