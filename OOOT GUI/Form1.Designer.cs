@@ -43,9 +43,9 @@
             this.button7 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button11 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button11 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -205,6 +205,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Scripts:";
             // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(9, 219);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(286, 23);
+            this.button11.TabIndex = 8;
+            this.button11.Text = "Download HD Textures";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // button10
             // 
             this.button10.Location = new System.Drawing.Point(6, 193);
@@ -225,16 +235,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Commit Info:";
             // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(9, 219);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(286, 23);
-            this.button11.TabIndex = 8;
-            this.button11.Text = "Download HD Textures";
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,7 +247,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.3";
+            this.Text = "OOOT BUILD GUI ver 0.4";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
