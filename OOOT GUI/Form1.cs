@@ -218,5 +218,10 @@ namespace OOOT_GUI
                 return "";
             }
         }
+
+        private void button11_Click(object sender, EventArgs e) //Download HD Texture Pack
+        {
+            RunProcess("/C hdtexutres.bat" + GetRomVersionParameter());
+        }
     }
 }
