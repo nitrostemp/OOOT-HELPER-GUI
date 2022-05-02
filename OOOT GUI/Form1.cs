@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.IO;
+using IWshRuntimeLibrary;
 
 namespace OOOT_GUI
 {
@@ -78,9 +79,36 @@ namespace OOOT_GUI
             DoFullSetup(false);
         }
 
-        private void button10_Click(object sender, EventArgs e) // Run OOOT
+        private void button10_Click(object sender, EventArgs e) // Create shortcut to OOOT
         {
-            RunProcess("/C runOOT.bat");
+            string path = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%");
+            string exePath = Path.Combine(path, @"ooot\vs\Release\OOT.exe");
+
+            // show error and exit early, if no .exe found
+            if (!System.IO.File.Exists(exePath))
+            {
+                MessageBox.Show("ERROR: Can't create shortcut, no OOT.exe found!");
+                return;
+            }
+
+            try
+            {
+                object shDesktop = (object)"Desktop";
+                WshShell shell = new WshShell();
+                string shortcutPath = (string)shell.SpecialFolders.Item(ref shDesktop) + @"\OpenOcarina.lnk";
+                IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
+                shortcut.Description = "OpenOcarina";
+                shortcut.TargetPath = exePath;
+                shortcut.Save();
+            }
+            catch
+            {
+                MessageBox.Show("ERROR: Something went wrong, when trying to create shortcut!");
+            }
+        }
+        private void button11_Click(object sender, EventArgs e) // Download HD Texture Pack
+        {
+            RunProcess("/C hdtexutres.bat" + GetRomVersionParameter());
         }
 
         private void DoFullSetup(bool installTools)
@@ -206,7 +234,7 @@ namespace OOOT_GUI
             {
                 using (var md5 = MD5.Create())
                 {
-                    using (var stream = File.OpenRead(filename))
+                    using (var stream = System.IO.File.OpenRead(filename))
                     {
                         var hash = md5.ComputeHash(stream);
                         return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
@@ -217,11 +245,6 @@ namespace OOOT_GUI
             {
                 return "";
             }
-        }
-
-        private void button11_Click(object sender, EventArgs e) //Download HD Texture Pack
-        {
-            RunProcess("/C hdtexutres.bat" + GetRomVersionParameter());
         }
     }
 }
