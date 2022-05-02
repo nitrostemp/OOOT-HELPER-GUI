@@ -25,6 +25,7 @@ for /f "delims=" %%F in ('dir /b /s "%VS_PATH%\vsdevcmd.bat" 2^>nul') do set VSD
 )
 
 :Build
+C:
 cd %USERPROFILE%\ooot
 msbuild vs\oot.sln -p:Configuration=Release -p:Platform=Win32
 exit

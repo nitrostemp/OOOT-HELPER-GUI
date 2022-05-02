@@ -1,4 +1,5 @@
 @echo off
+C:
 cd %USERPROFILE%\OOOT
 if "%~1"=="EUR_MQD" (
     setup.py -b EUR_MQD -c

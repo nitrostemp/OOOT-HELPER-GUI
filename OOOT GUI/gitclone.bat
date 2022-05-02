@@ -65,5 +65,6 @@ goto main
 
     echo | set /p dummy="Finished."
     echo .
+    C:
     cd %USERPROFILE%
     git clone --recursive -b dev https://github.com/blawar/ooot.git
