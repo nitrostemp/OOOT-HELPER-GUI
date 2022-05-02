@@ -221,7 +221,7 @@
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(289, 23);
             this.button10.TabIndex = 7;
-            this.button10.Text = "Run OOOT";
+            this.button10.Text = "Create OOT Desktop Shortcut";
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
@@ -247,7 +247,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.4";
+            this.Text = "OOOT BUILD GUI ver 0.41";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

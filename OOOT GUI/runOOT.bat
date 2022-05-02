@@ -1,1 +1,1 @@
-ooot\vs\Release\OOT.exe
+cscript //Nologo //B createshortcut.vbs

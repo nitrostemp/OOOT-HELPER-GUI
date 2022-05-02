@@ -75,6 +75,9 @@
     <Content Include="copyrom.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="createshortcut.vbs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="extract_assets.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

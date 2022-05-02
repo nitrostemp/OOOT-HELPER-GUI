@@ -1,2 +1,2 @@
-cd OOOT
+cd %USERPROFILE%\OOOT
 git pull

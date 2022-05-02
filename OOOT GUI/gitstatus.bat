@@ -1,3 +1,3 @@
 @echo off
-cd ooot
+cd %USERPROFILE%\ooot
 git show --summary .
