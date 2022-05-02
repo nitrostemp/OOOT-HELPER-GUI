@@ -200,16 +200,16 @@
             this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Location = new System.Drawing.Point(13, 206);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(303, 248);
+            this.groupBox2.Size = new System.Drawing.Size(303, 257);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Scripts:";
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(9, 219);
+            this.button11.Location = new System.Drawing.Point(6, 222);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(286, 23);
+            this.button11.Size = new System.Drawing.Size(289, 23);
             this.button11.TabIndex = 8;
             this.button11.Text = "Download HD Textures";
             this.button11.UseVisualStyleBackColor = true;
