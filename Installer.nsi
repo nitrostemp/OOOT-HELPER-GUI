@@ -36,9 +36,9 @@ Section "uninstall"
     Delete "$SMPROGRAMS\Open Ocarina Helper GUI.lnk"
  
     # Delete the uninstaller
-    Delete $INSTDIR\uninstaller.exe
- 
-    RMDir $INSTDIR
+    Delete $INSTDIR\uninstall.exe
+	 
+    RMDir /r $INSTDIR
 	
 # uninstaller section end
 SectionEnd
