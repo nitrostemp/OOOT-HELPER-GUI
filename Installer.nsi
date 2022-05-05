@@ -10,13 +10,14 @@ InstallDir "$PROGRAMFILES\Open Ocarina Helper GUI\"
  
 # For removing Start Menu shortcut in Windows 7
 RequestExecutionLevel admin
+
 # start default section
 Section
 		
     # set the installation directory as the destination for the following actions
     SetOutPath $INSTDIR
 	
-	File /r "OOOT GUI\bin\Release\*.*"
+    File /r "OOOT GUI\bin\Release\*.*"
 	
     # create the uninstaller
     WriteUninstaller "$INSTDIR\uninstall.exe"
@@ -32,7 +33,7 @@ Section "uninstall"
     # Remove the link from the start menu
     Delete "$SMPROGRAMS\RemoveOOTGUI.lnk"
 	
-	# Remove the link from the start menu
+    # Remove the link from the start menu
     Delete "$SMPROGRAMS\Open Ocarina Helper GUI.lnk"
  
     # Delete the uninstaller
