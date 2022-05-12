@@ -52,21 +52,21 @@ namespace OOOT_GUI
                 UpdateColorControls(c);
             }
 
-            // Form1 Menustrip (TODO: maybe do in better way)
+            // Form1 Menustrip
             foreach (ToolStripMenuItem item in menuStrip1.Items)
             {
                 foreach (ToolStripMenuItem item2 in item.DropDownItems)
                 {
                     item2.BackColor = ColorBack;
                     item2.ForeColor = ColorFore;
-
-                    foreach (ToolStripMenuItem item3 in item.DropDownItems)
-                    {
-                        item3.BackColor = ColorBack;
-                        item3.ForeColor = ColorFore;
-                    }
                 }
             }
+
+            // set theme selection menu items color
+            darkToolStripMenuItem.BackColor = ColorBack;
+            brightToolStripMenuItem.BackColor = ColorBack;
+            darkToolStripMenuItem.ForeColor = ColorFore;
+            brightToolStripMenuItem.ForeColor = ColorFore;
 
             // Update SettingsForm colors
             if (settingsForm != null)
@@ -117,8 +117,21 @@ namespace OOOT_GUI
             }
 
             // make dark theme buttons and combobox darker
-            if (CurrentTheme == Theme.Dark && (control is Button || control is ComboBox || control is MenuStrip))
-                control.BackColor = Color.FromArgb(ColorBack.R - 7, ColorBack.G - 7, ColorBack.B - 7);
+            if (CurrentTheme == Theme.Dark)
+            {
+                int R = ColorBack.R - 7;
+                int G = ColorBack.G - 7;
+                int B = ColorBack.B - 7;
+
+                if (R < 0) R = 0;
+                if (G < 0) G = 0;
+                if (B < 0) B = 0;
+
+                Color darkerColor = Color.FromArgb(R, G, B);
+                
+                if (control is Button || control is ComboBox || control is MenuStrip)
+                    control.BackColor = darkerColor;
+            }
 
             foreach (Control subC in control.Controls)
             {
