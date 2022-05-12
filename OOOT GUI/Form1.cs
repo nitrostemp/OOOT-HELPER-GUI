@@ -116,6 +116,10 @@ namespace OOOT_GUI
                 control.ForeColor = ColorFore;
             }
 
+            // make dark theme buttons and combobox darker
+            if (CurrentTheme == Theme.Dark && (control is Button || control is ComboBox || control is MenuStrip))
+                control.BackColor = Color.FromArgb(ColorBack.R - 7, ColorBack.G - 7, ColorBack.B - 7);
+
             foreach (Control subC in control.Controls)
             {
                 UpdateColorControls(subC);
