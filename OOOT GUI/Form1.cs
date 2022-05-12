@@ -104,7 +104,7 @@ namespace OOOT_GUI
             }
 
             // set black/white colors on bright theme to spesific elements
-            if (CurrentTheme == Theme.Bright && (control is TextBox || control is ComboBox))
+            if (CurrentTheme == Theme.Bright && (control is TextBox || control is ComboBox || control is CheckBox))
             {
                 control.BackColor = Color.White;
                 control.ForeColor = Color.Black;
