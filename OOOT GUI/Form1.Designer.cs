@@ -40,6 +40,9 @@
             this.runOOOTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.pathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setThemeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.brightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.createShortcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadHDTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,6 +50,7 @@
             this.installToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyRomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractAssetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +63,6 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.checkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -148,7 +151,8 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pathToolStripMenuItem});
+            this.pathToolStripMenuItem,
+            this.setThemeToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(61, 20);
             this.toolStripMenuItem1.Text = "Settings";
@@ -156,9 +160,32 @@
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pathToolStripMenuItem.Text = "Paths";
             this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
+            // 
+            // setThemeToolStripMenuItem
+            // 
+            this.setThemeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.brightToolStripMenuItem,
+            this.darkToolStripMenuItem});
+            this.setThemeToolStripMenuItem.Name = "setThemeToolStripMenuItem";
+            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setThemeToolStripMenuItem.Text = "Set Theme";
+            // 
+            // brightToolStripMenuItem
+            // 
+            this.brightToolStripMenuItem.Name = "brightToolStripMenuItem";
+            this.brightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.brightToolStripMenuItem.Text = "Bright";
+            this.brightToolStripMenuItem.Click += new System.EventHandler(this.brightToolStripMenuItem_Click);
+            // 
+            // darkToolStripMenuItem
+            // 
+            this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
+            this.darkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.darkToolStripMenuItem.Text = "Dark";
+            this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -216,6 +243,13 @@
             this.extractAssetsToolStripMenuItem.Text = "Extract Assets";
             this.extractAssetsToolStripMenuItem.Click += new System.EventHandler(this.extractAssetsToolStripMenuItem_Click);
             // 
+            // checkStatusToolStripMenuItem
+            // 
+            this.checkStatusToolStripMenuItem.Name = "checkStatusToolStripMenuItem";
+            this.checkStatusToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.checkStatusToolStripMenuItem.Text = "Check Status";
+            this.checkStatusToolStripMenuItem.Click += new System.EventHandler(this.checkStatusToolStripMenuItem_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -264,6 +298,7 @@
             // 
             // button5
             // 
+            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button5.Location = new System.Drawing.Point(183, 77);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(202, 23);
@@ -274,6 +309,7 @@
             // 
             // button8
             // 
+            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button8.Location = new System.Drawing.Point(6, 19);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(379, 23);
@@ -284,6 +320,7 @@
             // 
             // button9
             // 
+            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button9.Location = new System.Drawing.Point(6, 48);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(378, 23);
@@ -297,15 +334,17 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.checkBox1.Location = new System.Drawing.Point(8, 81);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(93, 17);
+            this.checkBox1.Size = new System.Drawing.Size(99, 18);
             this.checkBox1.TabIndex = 9;
             this.checkBox1.Text = "Extract Assets";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // comboBox1
             // 
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "PAL 1.0",
@@ -330,17 +369,11 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Builder:";
             // 
-            // checkStatusToolStripMenuItem
-            // 
-            this.checkStatusToolStripMenuItem.Name = "checkStatusToolStripMenuItem";
-            this.checkStatusToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.checkStatusToolStripMenuItem.Text = "Check Status";
-            this.checkStatusToolStripMenuItem.Click += new System.EventHandler(this.checkStatusToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(415, 238);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
@@ -350,7 +383,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.5";
+            this.Text = "OOOT BUILD GUI ver 0.51";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -395,6 +428,9 @@
         private System.Windows.Forms.ToolStripMenuItem runOOOTToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem oOOTReleaseFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkStatusToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem setThemeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem brightToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem darkToolStripMenuItem;
     }
 }
 

@@ -287,7 +287,7 @@ namespace OOOT_GUI
             string destination = Path.Combine(romDirPath + @"baserom_original.n64");
 
             if (System.IO.File.Exists(source))
-                System.IO.File.Copy(source, destination);
+                System.IO.File.Copy(source, destination, true);
 
             return System.IO.File.Exists(source);
         }
@@ -746,15 +746,27 @@ namespace OOOT_GUI
 
             if (settings.Length > 0) // set install dir
                 SetInstallDir(settings[0], false);
+
             if (settings.Length > 1) // set temp download dir
                 TempDownloadDir = settings[1];
+
             if (settings.Length > 2 && Form1.form1 != null) // set rom version
                 Form1.form1.SetRomVersion(settings[2] == "EUR_MQD");
+
             if (settings.Length > 3 && Form1.form1 != null) // set extract assets checkbox value
             {
                 bool value = true;
                 if (bool.TryParse(settings[3], out value))
                     Form1.form1.SetExtractAssetsCheckbox(value);
+            }
+
+            if (settings.Length > 4 && Form1.form1 != null) // set theme
+            {
+                int themeId = 0;
+                if (int.TryParse(settings[4], out themeId))
+                    Form1.form1.ChangeTheme((Form1.Theme)themeId);
+                else
+                    Form1.form1.ChangeTheme(Form1.form1.CurrentTheme);
             }
         }
 
@@ -764,7 +776,12 @@ namespace OOOT_GUI
             {
                 if (!string.IsNullOrEmpty(InstallDir))
                 {
-                    string[] saveData = { InstallDir, TempDownloadDir, romVersion, extractAssets };
+                    // get theme
+                    string theme = "0";
+                    if (Form1.form1 != null)
+                        theme = Form1.form1.GetThemeID().ToString();
+
+                    string[] saveData = { InstallDir, TempDownloadDir, romVersion, extractAssets, theme };
                     System.IO.File.WriteAllLines(GetSettingsSavePath(), saveData);
                 }
             }
