@@ -47,6 +47,7 @@
             this.installToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyRomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractAssetsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +60,6 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.checkStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -216,6 +216,13 @@
             this.extractAssetsToolStripMenuItem.Text = "Extract Assets";
             this.extractAssetsToolStripMenuItem.Click += new System.EventHandler(this.extractAssetsToolStripMenuItem_Click);
             // 
+            // checkStatusToolStripMenuItem
+            // 
+            this.checkStatusToolStripMenuItem.Name = "checkStatusToolStripMenuItem";
+            this.checkStatusToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.checkStatusToolStripMenuItem.Text = "Check Status";
+            this.checkStatusToolStripMenuItem.Click += new System.EventHandler(this.checkStatusToolStripMenuItem_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -330,13 +337,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Builder:";
             // 
-            // checkStatusToolStripMenuItem
-            // 
-            this.checkStatusToolStripMenuItem.Name = "checkStatusToolStripMenuItem";
-            this.checkStatusToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.checkStatusToolStripMenuItem.Text = "Check Status";
-            this.checkStatusToolStripMenuItem.Click += new System.EventHandler(this.checkStatusToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -350,7 +350,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.5";
+            this.Text = "OOOT BUILD GUI ver 0.51";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
