@@ -4,13 +4,73 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Drawing;
 
 namespace OOOT_GUI
 {
     public partial class Form1 : Form
     {
+        // Forms
         public static Form1 form1;
         private SettingsForm settingsForm;
+
+        // Theme Settings
+        public enum Theme { Bright, Dark, Custom };
+        public Theme CurrentTheme = Theme.Bright;
+        private Color ColorBack = Color.FromArgb(240, 240, 240);
+        private Color ColorFore = Color.FromArgb(0, 0, 0);
+
+        public void ChangeTheme(Theme newTheme)
+        {
+            if (newTheme == CurrentTheme)
+                return;
+
+            // get new colors by new theme
+            switch (newTheme)
+            {
+                case Theme.Bright:
+                    ColorBack = Color.FromArgb(240, 240, 240);
+                    ColorFore = Color.FromArgb(0, 0, 0);
+                    break;
+                case Theme.Dark:
+                    ColorBack = Color.FromArgb(32, 33, 36);
+                    ColorFore = Color.FromArgb(177, 177, 177);
+                    break;
+                case Theme.Custom: // TODO: TEMP
+                    ColorBack = Color.FromArgb(32, 33, 36);
+                    ColorFore = Color.FromArgb(177, 177, 177);
+                    break;
+                default:
+                    break;
+            }
+
+            // update form colors
+            BackColor = ColorBack;
+            ForeColor = ColorFore;
+
+            foreach (Control c in this.Controls)
+            {
+                UpdateColorControls(c);
+            }
+
+            CurrentTheme = newTheme;
+        }
+
+        public void UpdateColorControls(Control control)
+        {
+            control.BackColor = ColorBack;
+            control.ForeColor = ColorFore;
+
+            foreach (Control subC in control.Controls)
+            {
+                UpdateColorControls(subC);
+            }
+        }
+
+        public int GetThemeID()
+        {
+            return (int)CurrentTheme;
+        }
 
         public Form1()
         {
@@ -414,6 +474,16 @@ namespace OOOT_GUI
         public void SetExtractAssetsCheckbox(bool value)
         {
             checkBox1.Checked = value;
+        }
+
+        private void brightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeTheme(Theme.Bright);
+        }
+
+        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeTheme(Theme.Dark);
         }
     }
 }
