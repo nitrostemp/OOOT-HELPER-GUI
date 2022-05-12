@@ -1,1 +1,0 @@
-cscript //Nologo //B createshortcut.vbs

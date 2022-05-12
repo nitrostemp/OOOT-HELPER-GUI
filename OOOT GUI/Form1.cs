@@ -3,68 +3,66 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.IO;
-using IWshRuntimeLibrary;
 
 namespace OOOT_GUI
 {
     public partial class Form1 : Form
     {
-        // Valid ROM Hashes (.z64, .n64, .v64)
-        private string[] md5HashesPal = { "e040de91a74b61e3201db0e2323f768a", "f8ef2f873df415fc197f4a9837d7e353", "9526b263b60577d8ed22fb7a33c2facd" };
-        private string[] md5HashesEurMqd = { "f751d1a097764e2337b1ac9ba1e27699", "ce96bd52cb092d8145fb875d089fa925", "cbd40c8fb47404678b97cba50d2af495" };
+        public static Form1 form1;
+        private SettingsForm settingsForm;
 
         public Form1()
         {
+            form1 = this;
+            settingsForm = new SettingsForm();
             InitializeComponent();
-            UpdateStatusLabel();
-        }
-
-        private void button1_Click(object sender, EventArgs e) // Clone repository
-        {
-            Process p = new Process();
-            p.StartInfo.FileName = "CMD.exe";
-            p.StartInfo.Arguments = "/C gitclone.bat";
-            p.EnableRaisingEvents = true;
-            p.Exited += new EventHandler(UpdateStatusLabel);
-            p.Start();
-            p.WaitForExit();
-        }
-
-        private void button3_Click(object sender, EventArgs e) // Download tools
-        {
-            string strCmdDownload1 = "/C download.bat";
-            RunProcess(strCmdDownload1 );
-        }
-
-        private void button2_Click(object sender, EventArgs e) // Install tools
-        {
-            RunProcess("/C install.bat");
-        }
-
-        private void button4_Click(object sender, EventArgs e) // Update repository
-        {
-            RunProcess("/C pullgit.bat");
-            UpdateStatusLabel();
+            Builder.LoadSettings();
+            UpdateUI();
         }
 
         private void button5_Click(object sender, EventArgs e) // Compile
         {
-            if (checkBox1.Checked)
-                RunProcess("/C extract_assets.bat" + GetRomVersionParameter());
+            // check if vs build tools install processes exist
+            bool block = false;
+            Process[] vsProcesses = Process.GetProcesses();
+            foreach (Process p in vsProcesses)
+            {
+                if (p.MainWindowTitle.Contains("Visual Studio Installer"))
+                    block = true;
+                else if (p.ProcessName == "vs_BuildTools")
+                    block = true;
+                else if (p.ProcessName == "vs_setup_bootstrapper")
+                    block = true;
+            }
 
-            RunProcess("/C compile.bat");
-        }
+            // vs build tools processes detected, can't compile yet
+            if (block)
+            {
+                DialogResult result = MessageBox.Show("Wait for VS Build Tools to install before compiling.", "Error!", MessageBoxButtons.AbortRetryIgnore);
+                if (result == DialogResult.Abort)
+                    return;
+                if (result == DialogResult.Retry)
+                {
+                    button5_Click(sender, e);
+                    return;
+                }
+            }
 
-        private void button6_Click(object sender, EventArgs e) // Copy ROM
-        {
-            RunProcess("/C copyrom.bat" + GetRomVersionParameter() + GetRomFilename());
-        }
+            // no rom found
+            if (!IsValidRomAvailable(true))
+            {
+                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!");
+                return;
+            }
+            else
+            {
+                if (checkBox1.Checked)
+                    if (!Builder.ExtractAssets(GetRomVersion()))
+                        return;
 
-        private void button7_Click(object sender, EventArgs e) // Extract assets
-        {
-            RunProcess("/C extract_assets.bat" + GetRomVersionParameter());
+                Builder.Build(IsEurMqd());
+            }
         }
 
         private void button8_Click(object sender, EventArgs e) // All-in-one
@@ -77,83 +75,182 @@ namespace OOOT_GUI
             DoFullSetup(false);
         }
 
-        private void button10_Click(object sender, EventArgs e) // Create shortcut to OOOT
+        private void cloneToolStripMenuItem_Click(object sender, EventArgs e) // clone repo
         {
-            string path = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%");
-            string exePath = Path.Combine(path, @"ooot\vs\Release\OOT.exe");
+            Builder.Clone();
+            UpdateUI();
+        }
 
-            // show error and exit early, if no .exe found
-            if (!System.IO.File.Exists(exePath))
+        private void updateToolStripMenuItem_Click(object sender, EventArgs e) // update repo
+        {
+            Builder.Update();
+            UpdateUI();
+        }
+
+        private void oOOTFolderToolStripMenuItem_Click(object sender, EventArgs e) // open OOOT directory
+        {
+            OpenFolder(Builder.GetOootPath());
+        }
+
+        private void builderFolderToolStripMenuItem_Click(object sender, EventArgs e) // open Builder directory
+        {
+            OpenFolder(Builder.GetBuilderPath());
+        }
+
+        private void oOOTReleaseFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFolder(Path.GetDirectoryName(Builder.GetOootExePath()));
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e) // delete repo
+        {
+            Builder.DeleteRepo();
+            UpdateUI();
+        }
+
+        private void downloadToolsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Builder.DownloadTools(false, true);
+        }
+
+        private void installToolsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Builder.InstallTools(true);
+        }
+
+        private void copyRomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Builder.CopyRom(GetRomFilename(), GetRomVersion());
+        }
+
+        private void extractAssetsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Builder.ExtractAssets(GetRomVersion());
+        }
+
+        private void createShortcutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Builder.CreateShortcut();
+        }
+
+        private void downloadHDTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Builder.DownloadAndInstallHdTextures();
+        }
+
+        private void pathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            settingsForm.Show();
+        }
+
+        private void gitHubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/blawar/ooot");
+        }
+
+        private void runOOOTToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Builder.LaunchGame();
+        }
+
+        private void viewCommitOnGitHubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!Builder.DoesRepositoryExist())
             {
-                MessageBox.Show("ERROR: Can't create shortcut, no OOT.exe found!");
+                MessageBox.Show("No OOOT repository found!", "Error!");
                 return;
             }
 
-            try
-            {
-                object shDesktop = (object)"Desktop";
-                WshShell shell = new WshShell();
-                string shortcutPath = (string)shell.SpecialFolders.Item(ref shDesktop) + @"\OpenOcarina.lnk";
-                IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
-                shortcut.Description = "OpenOcarina";
-                shortcut.TargetPath = exePath;
-                shortcut.Save();
-            }
-            catch
-            {
-                MessageBox.Show("ERROR: Something went wrong, when trying to create shortcut!");
-            }
-        }
-        private void button11_Click(object sender, EventArgs e) // Download HD Texture Pack
-        {
-            RunProcess("/C hdtexutres.bat" + GetRomVersionParameter());
+            string commitInfo = Builder.GetCommitSummary();
+            string commitId = ParseGitStatusString(commitInfo, true);
+
+            if (string.IsNullOrEmpty(commitId))
+                return;
+
+            string url = $"https://github.com/blawar/ooot/commit/{commitId}";
+
+            Process.Start(url);
         }
 
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            if (toolStripMenuItem3.DropDownItems.Count == 0)
+                UpdateBranches();
+        }
+
+        /// <summary>
+        /// Show status of installed Tools and available ROMs.
+        /// </summary>
+        private void checkStatusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string text = "Git installed: " + (Builder.IsGitInstalled() ? "OK" : "FAILED");
+            text += "\nPython installed: " + (Builder.IsPythonInstalled() ? "OK" : "FAILED");
+            text += "\nVS Build Tools installed: " + (Builder.IsVsBuildToolsInstalled() ? "OK" : "FAILED");
+            text += "\n";
+            text += "\nPAL 1.0 ROM: " + (IsValidRomAvailable(false, "PAL_1.0") ? "OK" : "FAILED");
+            text += "\nEUR MQD ROM: " + (IsValidRomAvailable(false, "EUR_MQD") ? "OK" : "FAILED");
+
+            MessageBox.Show(text, "Status");
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Builder.SaveSettings(GetRomVersion(), checkBox1.Checked.ToString());
+        }
+
+        /// <summary>
+        /// Setup OOOT from scratch (Download/Install Tools, Clone repo, Copy and setup ROM, and build.)
+        /// </summary>
         private void DoFullSetup(bool installTools)
         {
-            if (installTools)
+            // no rom found
+            if (!IsValidRomAvailable(false))
             {
-                button3_Click(null, null); // download tools
-                button2_Click(null, null); // install tools
+                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!");
+                return;
             }
 
-            button1_Click(null, null); // clone repo
-            button6_Click(null, null); // copy rom
-            button7_Click(null, null); // extract assets
+            // download/install tools
+            if (installTools)
+                Builder.DownloadTools(true, true);
 
-            RunProcess("/C compile.bat"); // compile
+            // clone repo
+            if (!Builder.Clone())
+                return;
+
+            // update UI
+            UpdateUI();
+
+            // copy rom
+            Builder.CopyRom(GetRomFilename(), GetRomVersion());
+
+            // extract assets
+            Builder.ExtractAssets(GetRomVersion());
+
+            // build
+            Builder.Build(IsEurMqd());
         }
 
-        private void UpdateStatusLabel(object sender, EventArgs e)
+        public void UpdateUI(object sender, EventArgs e)
         {
-            Process p = new Process();
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = "CMD.exe";
-            p.StartInfo.Arguments = "/C gitstatus.bat";
-            p.Start();
+            // update commit info
+            string commitInfo = Builder.GetCommitSummary();
+            label1.Text = ParseGitStatusString(commitInfo);
 
-            string output = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
-
-            label1.Text = ParseGitStatusString(output);
+            // update branch
+            UpdateBranches();
+            string currentBranch = Builder.GetCurrentBranchName();
+            if (!string.IsNullOrEmpty(currentBranch))
+                Builder.CurrentBranch = currentBranch;
+            toolStripMenuItem3.Text = $"Branch: {Builder.CurrentBranch}";
         }
 
-        private void UpdateStatusLabel()
+        private void UpdateUI()
         {
-            UpdateStatusLabel(null, null);
+            UpdateUI(null, null);
         }
 
-        private void RunProcess(string command)
-        {
-            Process p = new Process();
-            p.StartInfo.FileName = "CMD.exe";
-            p.StartInfo.Arguments = command;
-            p.Start();
-            p.WaitForExit();
-        }
-
-        private string ParseGitStatusString(string cmdOutput)
+        private string ParseGitStatusString(string cmdOutput, bool returnCommitIdOnly = false)
         {
             string errorString = "No OOOT repository found.";
 
@@ -176,6 +273,10 @@ namespace OOOT_GUI
             if (string.IsNullOrEmpty(commit) || string.IsNullOrEmpty(date))
                 return errorString;
 
+            // early commit id only return, if set sot
+            if (returnCommitIdOnly)
+                return commit;
+
             // get commit title
             if (lines.Length > 3 && !string.IsNullOrEmpty(lines[4]))
                 title = lines[4];
@@ -191,7 +292,7 @@ namespace OOOT_GUI
         private string GetRomFilename()
         {
             bool isEurMqd = IsEurMqd();
-            string path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string path = Builder.GetBuilderPath();
 
             // get rom files (.z64 first, then .n64 and .v64)
             List<string> files = new List<string>();
@@ -203,19 +304,19 @@ namespace OOOT_GUI
             {
                 foreach (string file in files)
                 {
-                    string md5Hash = CalculateMD5(file);
+                    string md5Hash = Builder.CalculateMD5(file);
 
-                    if (isEurMqd && md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && md5HashesPal.Contains(md5Hash))
-                        return " " + Path.GetFileName(file);
+                    if (isEurMqd && Builder.Md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && Builder.Md5HashesPal.Contains(md5Hash))
+                        return Path.GetFileName(file);
                 }
             }
 
             return "";
         }
 
-        private string GetRomVersionParameter()
+        private string GetRomVersion()
         {
-            return IsEurMqd() ? " EUR_MQD" : " PAL_1.0";
+            return IsEurMqd() ? "EUR_MQD" : "PAL_1.0";
         }
 
         private bool IsEurMqd()
@@ -223,26 +324,96 @@ namespace OOOT_GUI
             return comboBox1.SelectedIndex == 1;
         }
 
-        private string CalculateMD5(string filename)
+        /// <summary>
+        /// Is a valid ROM file in Builder or 'ooot/roms' folder?
+        /// </summary>
+        private bool IsValidRomAvailable(bool showErrorMessage, string romVersion = "")
         {
-            if (string.IsNullOrEmpty(filename))
-                return "";
+            bool isEurMqd = IsEurMqd();
 
-            try
+            // (optional) override global rom version
+            if (romVersion == "PAL_1.0")
+                isEurMqd = false;
+            else if (romVersion == "EUR_MQD")
+                isEurMqd = true;
+
+            bool value = !string.IsNullOrEmpty(Builder.GetRomFilename(isEurMqd)) || Builder.IsRomInRomsFolder(isEurMqd, false);
+            return value;
+        }
+
+        private void OpenFolder(string path)
+        {
+            if (!Directory.Exists(path))
             {
-                using (var md5 = MD5.Create())
-                {
-                    using (var stream = System.IO.File.OpenRead(filename))
-                    {
-                        var hash = md5.ComputeHash(stream);
-                        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-                    }
-                }
+                MessageBox.Show("Error: Can't open folder: " + path);
+                return;
             }
-            catch
+
+            Process.Start(path);
+        }
+
+        /// Change Branch
+        private void MenuBranchClickHandler(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
+            string newBranch = clickedItem.Text;
+            if (MessageBox.Show($"Do you want to switch branch from '{Builder.CurrentBranch}' to '{newBranch}'?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                return "";
+                Builder.CMD($"/C git checkout {newBranch}", Builder.GetOootPath(), false);
+                Builder.CurrentBranch = newBranch;
             }
+            UpdateUI();
+        }
+
+        /// Create button for every branch in Branch menu.
+        private void UpdateBranches()
+        {
+            List<string> branches = Builder.GetAllBranches();
+            if (branches == null)
+                branches = new List<string>();
+
+            if (branches.Count == 0) // no real branches found, so create dummy ones
+            {
+                branches.Add("dev");
+                branches.Add("master");
+            }
+
+            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+
+            // create button for every branch
+            foreach (string branch in branches)
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                item.Name = "buttonBranch" + branch;
+                item.Text = branch;
+                item.Click += new EventHandler(MenuBranchClickHandler);
+                items.Add(item);
+            }
+
+            // add buttons to menu
+            toolStripMenuItem3.DropDownItems.Clear();
+            toolStripMenuItem3.DropDownItems.AddRange(items.ToArray());
+        }
+
+        // used when loading 'settings.txt'
+        public void SetRomVersion(bool isEurMqd)
+        {
+            if (isEurMqd)
+            {
+                comboBox1.SelectedIndex = 1;
+                comboBox1.Text = "EUR_MQD";
+            }
+            else
+            {
+                comboBox1.SelectedIndex = 0;
+                comboBox1.Text = "PAL_1.0";
+            }
+        }
+
+        // used when loading 'settings.txt'
+        public void SetExtractAssetsCheckbox(bool value)
+        {
+            checkBox1.Checked = value;
         }
     }
 }
