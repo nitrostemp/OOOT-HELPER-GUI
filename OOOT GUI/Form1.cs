@@ -22,8 +22,7 @@ namespace OOOT_GUI
 
         public void ChangeTheme(Theme newTheme)
         {
-            if (newTheme == CurrentTheme)
-                return;
+            CurrentTheme = newTheme;
 
             // get new colors by new theme
             switch (newTheme)
@@ -54,14 +53,14 @@ namespace OOOT_GUI
             }
 
             // Form1 Menustrip (TODO: maybe do in better way)
-            foreach(ToolStripMenuItem item in menuStrip1.Items)
+            foreach (ToolStripMenuItem item in menuStrip1.Items)
             {
                 foreach (ToolStripMenuItem item2 in item.DropDownItems)
                 {
                     item2.BackColor = ColorBack;
                     item2.ForeColor = ColorFore;
-                    
-                    foreach(ToolStripMenuItem item3 in item.DropDownItems)
+
+                    foreach (ToolStripMenuItem item3 in item.DropDownItems)
                     {
                         item3.BackColor = ColorBack;
                         item3.ForeColor = ColorFore;
@@ -70,24 +69,52 @@ namespace OOOT_GUI
             }
 
             // Update SettingsForm colors
-            if(settingsForm != null)
+            if (settingsForm != null)
             {
                 settingsForm.BackColor = ColorBack;
                 settingsForm.ForeColor = ColorFore;
 
-                foreach(Control c in settingsForm.Controls)
+                foreach (Control c in settingsForm.Controls)
                 {
                     UpdateColorControls(c);
                 }
             }
 
-            CurrentTheme = newTheme;
+            Builder.SaveSettings();
         }
 
         public void UpdateColorControls(Control control)
         {
-            control.BackColor = ColorBack;
-            control.ForeColor = ColorFore;
+            // Set FlatStyle to various elements (Bright = System, Dark = Flat)
+            FlatStyle flatStyle = (CurrentTheme == Theme.Bright ? FlatStyle.System : FlatStyle.Flat);
+            if (control is Button)
+            {
+                Button button = control as Button;
+                button.FlatStyle = flatStyle;
+            }
+            else if (control is ComboBox)
+            {
+                ComboBox comboBox = control as ComboBox;
+                comboBox.FlatStyle = flatStyle;
+            }
+            else if (control is CheckBox)
+            {
+                CheckBox checkBox = control as CheckBox;
+                checkBox.FlatStyle = flatStyle;
+            }
+
+            // set black/white colors on bright theme to spesific elements
+            if (CurrentTheme == Theme.Bright && (control is TextBox || control is ComboBox))
+            {
+                control.BackColor = Color.White;
+                control.ForeColor = Color.Black;
+            }
+            // set global theme color
+            else
+            {
+                control.BackColor = ColorBack;
+                control.ForeColor = ColorFore;
+            }
 
             foreach (Control subC in control.Controls)
             {
