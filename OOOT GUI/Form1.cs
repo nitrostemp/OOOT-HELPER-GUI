@@ -44,13 +44,25 @@ namespace OOOT_GUI
                     break;
             }
 
-            // update form colors
+            // Update Form1 colors
             BackColor = ColorBack;
             ForeColor = ColorFore;
 
             foreach (Control c in this.Controls)
             {
                 UpdateColorControls(c);
+            }
+
+            // Update SettingsForm colors
+            if(settingsForm != null)
+            {
+                settingsForm.BackColor = ColorBack;
+                settingsForm.ForeColor = ColorFore;
+
+                foreach(Control c in settingsForm.Controls)
+                {
+                    UpdateColorControls(c);
+                }
             }
 
             CurrentTheme = newTheme;
