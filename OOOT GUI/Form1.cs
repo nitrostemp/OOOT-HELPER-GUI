@@ -4,13 +4,145 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Drawing;
 
 namespace OOOT_GUI
 {
     public partial class Form1 : Form
     {
+        // Forms
         public static Form1 form1;
         private SettingsForm settingsForm;
+
+        // Theme Settings
+        public enum Theme { Bright, Dark, Custom };
+        public Theme CurrentTheme = Theme.Bright;
+        private Color ColorBack = Color.FromArgb(240, 240, 240);
+        private Color ColorFore = Color.FromArgb(0, 0, 0);
+
+        public void ChangeTheme(Theme newTheme)
+        {
+            CurrentTheme = newTheme;
+
+            // get new colors by new theme
+            switch (newTheme)
+            {
+                case Theme.Bright:
+                    ColorBack = Color.FromArgb(240, 240, 240);
+                    ColorFore = Color.FromArgb(0, 0, 0);
+                    break;
+                case Theme.Dark:
+                    ColorBack = Color.FromArgb(32, 33, 36);
+                    ColorFore = Color.FromArgb(177, 177, 177);
+                    break;
+                case Theme.Custom: // TODO: TEMP
+                    ColorBack = Color.FromArgb(32, 33, 36);
+                    ColorFore = Color.FromArgb(177, 177, 177);
+                    break;
+                default:
+                    break;
+            }
+
+            // Update Form1 colors
+            BackColor = ColorBack;
+            ForeColor = ColorFore;
+
+            foreach (Control c in this.Controls)
+            {
+                UpdateColorControls(c);
+            }
+
+            // Form1 Menustrip
+            foreach (ToolStripMenuItem item in menuStrip1.Items)
+            {
+                foreach (ToolStripMenuItem item2 in item.DropDownItems)
+                {
+                    item2.BackColor = ColorBack;
+                    item2.ForeColor = ColorFore;
+                }
+            }
+
+            // set theme selection menu items color
+            darkToolStripMenuItem.BackColor = ColorBack;
+            brightToolStripMenuItem.BackColor = ColorBack;
+            darkToolStripMenuItem.ForeColor = ColorFore;
+            brightToolStripMenuItem.ForeColor = ColorFore;
+
+            // Update SettingsForm colors
+            if (settingsForm != null)
+            {
+                settingsForm.BackColor = ColorBack;
+                settingsForm.ForeColor = ColorFore;
+
+                foreach (Control c in settingsForm.Controls)
+                {
+                    UpdateColorControls(c);
+                }
+            }
+
+            Builder.SaveSettings();
+        }
+
+        public void UpdateColorControls(Control control)
+        {
+            // Set FlatStyle to various elements (Bright = System, Dark = Flat)
+            FlatStyle flatStyle = (CurrentTheme == Theme.Bright ? FlatStyle.System : FlatStyle.Flat);
+            if (control is Button)
+            {
+                Button button = control as Button;
+                button.FlatStyle = flatStyle;
+            }
+            else if (control is ComboBox)
+            {
+                ComboBox comboBox = control as ComboBox;
+                comboBox.FlatStyle = flatStyle;
+            }
+            else if (control is CheckBox)
+            {
+                CheckBox checkBox = control as CheckBox;
+                checkBox.FlatStyle = flatStyle;
+            }
+
+            // set black/white colors on bright theme to spesific elements
+            if (CurrentTheme == Theme.Bright && (control is TextBox || control is ComboBox || control is CheckBox))
+            {
+                control.BackColor = Color.White;
+                control.ForeColor = Color.Black;
+            }
+            // set global theme color
+            else
+            {
+                control.BackColor = ColorBack;
+                control.ForeColor = ColorFore;
+            }
+
+            // make dark theme buttons and combobox darker
+            if (CurrentTheme == Theme.Dark)
+            {
+                int R = ColorBack.R - 7;
+                int G = ColorBack.G - 7;
+                int B = ColorBack.B - 7;
+
+                if (R < 0) R = 0;
+                if (G < 0) G = 0;
+                if (B < 0) B = 0;
+
+                Color darkerColor = Color.FromArgb(R, G, B);
+                
+                if (control is Button || control is ComboBox || control is MenuStrip)
+                    control.BackColor = darkerColor;
+            }
+
+            foreach (Control subC in control.Controls)
+            {
+                UpdateColorControls(subC);
+            }
+        }
+
+        public int GetThemeID()
+        {
+            return (int)CurrentTheme;
+        }
 
         public Form1()
         {
@@ -387,6 +519,8 @@ namespace OOOT_GUI
                 item.Name = "buttonBranch" + branch;
                 item.Text = branch;
                 item.Click += new EventHandler(MenuBranchClickHandler);
+                item.BackColor = ColorBack;
+                item.ForeColor = ColorFore;
                 items.Add(item);
             }
 
@@ -414,6 +548,16 @@ namespace OOOT_GUI
         public void SetExtractAssetsCheckbox(bool value)
         {
             checkBox1.Checked = value;
+        }
+
+        private void brightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeTheme(Theme.Bright);
+        }
+
+        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeTheme(Theme.Dark);
         }
     }
 }
