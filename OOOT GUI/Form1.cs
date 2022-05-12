@@ -53,6 +53,22 @@ namespace OOOT_GUI
                 UpdateColorControls(c);
             }
 
+            // Form1 Menustrip (TODO: maybe do in better way)
+            foreach(ToolStripMenuItem item in menuStrip1.Items)
+            {
+                foreach (ToolStripMenuItem item2 in item.DropDownItems)
+                {
+                    item2.BackColor = ColorBack;
+                    item2.ForeColor = ColorFore;
+                    
+                    foreach(ToolStripMenuItem item3 in item.DropDownItems)
+                    {
+                        item3.BackColor = ColorBack;
+                        item3.ForeColor = ColorFore;
+                    }
+                }
+            }
+
             // Update SettingsForm colors
             if(settingsForm != null)
             {
@@ -459,6 +475,8 @@ namespace OOOT_GUI
                 item.Name = "buttonBranch" + branch;
                 item.Text = branch;
                 item.Click += new EventHandler(MenuBranchClickHandler);
+                item.BackColor = ColorBack;
+                item.ForeColor = ColorFore;
                 items.Add(item);
             }
 
