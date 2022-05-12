@@ -287,7 +287,7 @@ namespace OOOT_GUI
             string destination = Path.Combine(romDirPath + @"baserom_original.n64");
 
             if (System.IO.File.Exists(source))
-                System.IO.File.Copy(source, destination);
+                System.IO.File.Copy(source, destination, true);
 
             return System.IO.File.Exists(source);
         }
