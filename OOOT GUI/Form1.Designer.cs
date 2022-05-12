@@ -176,14 +176,14 @@
             // brightToolStripMenuItem
             // 
             this.brightToolStripMenuItem.Name = "brightToolStripMenuItem";
-            this.brightToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
+            this.brightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.brightToolStripMenuItem.Text = "Bright";
             this.brightToolStripMenuItem.Click += new System.EventHandler(this.brightToolStripMenuItem_Click);
             // 
             // darkToolStripMenuItem
             // 
             this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
-            this.darkToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
+            this.darkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.darkToolStripMenuItem.Text = "Dark";
             this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
             // 
@@ -383,7 +383,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.5";
+            this.Text = "OOOT BUILD GUI ver 0.51";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
