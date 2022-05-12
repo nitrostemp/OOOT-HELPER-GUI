@@ -160,7 +160,7 @@
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pathToolStripMenuItem.Text = "Paths";
             this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
             // 
@@ -170,7 +170,7 @@
             this.brightToolStripMenuItem,
             this.darkToolStripMenuItem});
             this.setThemeToolStripMenuItem.Name = "setThemeToolStripMenuItem";
-            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setThemeToolStripMenuItem.Text = "Set Theme";
             // 
             // brightToolStripMenuItem
@@ -298,7 +298,7 @@
             // 
             // button5
             // 
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button5.Location = new System.Drawing.Point(183, 77);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(202, 23);
@@ -309,6 +309,7 @@
             // 
             // button8
             // 
+            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button8.Location = new System.Drawing.Point(6, 19);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(379, 23);
@@ -319,7 +320,7 @@
             // 
             // button9
             // 
-            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button9.Location = new System.Drawing.Point(6, 48);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(378, 23);
@@ -333,17 +334,17 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.checkBox1.Location = new System.Drawing.Point(8, 81);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(90, 17);
+            this.checkBox1.Size = new System.Drawing.Size(99, 18);
             this.checkBox1.TabIndex = 9;
             this.checkBox1.Text = "Extract Assets";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // comboBox1
             // 
-            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "PAL 1.0",
