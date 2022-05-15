@@ -187,7 +187,7 @@ namespace OOOT_GUI
 
             // (optional) extract assets
             if (checkBox1.Checked)
-                if (!Builder.ExtractAssets(GetRomVersion()))
+                if (!Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd())))
                     return;
 
             // build OOOT
@@ -249,12 +249,12 @@ namespace OOOT_GUI
 
         private void copyRomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.CopyRom(GetRomFilename(), GetRomVersion());
+            Builder.CopyRom(Builder.GetRomFilename(IsEurMqd()), Builder.GetRomVersion(IsEurMqd()));
         }
 
         private void extractAssetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.ExtractAssets(GetRomVersion());
+            Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd()));
         }
 
         private void createShortcutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -324,7 +324,7 @@ namespace OOOT_GUI
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Builder.SaveSettings(GetRomVersion(), checkBox1.Checked.ToString());
+            Builder.SaveSettings(Builder.GetRomVersion(IsEurMqd()), checkBox1.Checked.ToString());
         }
 
         /// <summary>
@@ -348,10 +348,10 @@ namespace OOOT_GUI
             UpdateUI();
 
             // copy rom
-            Builder.CopyRom(GetRomFilename(), GetRomVersion());
+            Builder.CopyRom(Builder.GetRomFilename(IsEurMqd()), Builder.GetRomVersion(IsEurMqd()));
 
             // extract assets
-            Builder.ExtractAssets(GetRomVersion());
+            Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd()));
 
             // build
             Builder.Build(IsEurMqd());
@@ -415,36 +415,6 @@ namespace OOOT_GUI
             return result;
         }
 
-        private string GetRomFilename()
-        {
-            bool isEurMqd = IsEurMqd();
-            string path = Builder.GetBuilderPath();
-
-            // get rom files (.z64 first, then .n64 and .v64)
-            List<string> files = new List<string>();
-            files.AddRange(Directory.GetFiles(path, "*.z64"));
-            files.AddRange(Directory.GetFiles(path, "*.n64"));
-            files.AddRange(Directory.GetFiles(path, "*.v64"));
-
-            if (files.Count > 0)
-            {
-                foreach (string file in files)
-                {
-                    string md5Hash = Builder.CalculateMD5(file);
-
-                    if (isEurMqd && Builder.Md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && Builder.Md5HashesPal.Contains(md5Hash))
-                        return Path.GetFileName(file);
-                }
-            }
-
-            return "";
-        }
-
-        private string GetRomVersion()
-        {
-            return IsEurMqd() ? "EUR_MQD" : "PAL_1.0";
-        }
-
         private bool IsEurMqd()
         {
             return comboBox1.SelectedIndex == 1;
@@ -466,7 +436,7 @@ namespace OOOT_GUI
             bool value = !string.IsNullOrEmpty(Builder.GetRomFilename(isEurMqd)) || Builder.IsRomInRomsFolder(isEurMqd, false);
 
             if (!value && showErrorMessage)
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!", "Error!");
+                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{Builder.GetRomVersion(IsEurMqd())} folders!", "Error!");
 
             return value;
         }
