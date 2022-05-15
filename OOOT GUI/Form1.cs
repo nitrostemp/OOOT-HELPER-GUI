@@ -333,7 +333,7 @@ namespace OOOT_GUI
         private void DoFullSetup(bool installTools)
         {
             // no rom found
-            if (!IsValidRomAvailable(false))
+            if (!IsValidRomAvailable(true))
                 return;
 
             // download/install tools
