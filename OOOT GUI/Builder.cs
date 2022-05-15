@@ -253,6 +253,7 @@ namespace OOOT_GUI
                 IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
                 shortcut.Description = "OpenOcarina";
                 shortcut.TargetPath = exePath;
+                shortcut.WorkingDirectory = Path.GetDirectoryName(exePath);
                 shortcut.Save();
 
                 if (System.IO.File.Exists(shortcutPath)) // succes, launch game?
@@ -623,7 +624,7 @@ namespace OOOT_GUI
         /// </summary>
         public static string GetRomFilename(bool isEurMqd)
         {
-            string path = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string path = GetBuilderPath();
 
             // get rom files (.z64 first, then .n64 and .v64)
             List<string> files = new List<string>();

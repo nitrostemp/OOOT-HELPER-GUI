@@ -338,7 +338,7 @@ namespace OOOT_GUI
             // no rom found
             if (!IsValidRomAvailable(false))
             {
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!");
+                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!", "Error!");
                 return;
             }
 
