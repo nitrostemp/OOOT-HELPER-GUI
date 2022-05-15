@@ -608,7 +608,7 @@ namespace OOOT_GUI
 
             // get rom files (.z64 first, then .n64 and .v64)
             List<string> files = new List<string>();
-            files.AddRange(Directory.GetFiles(path, " *.z64"));
+            files.AddRange(Directory.GetFiles(path, "*.z64"));
             files.AddRange(Directory.GetFiles(path, "*.n64"));
             files.AddRange(Directory.GetFiles(path, "*.v64"));
 

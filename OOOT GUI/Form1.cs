@@ -128,7 +128,7 @@ namespace OOOT_GUI
                 if (B < 0) B = 0;
 
                 Color darkerColor = Color.FromArgb(R, G, B);
-                
+
                 if (control is Button || control is ComboBox || control is MenuStrip)
                     control.BackColor = darkerColor;
             }
@@ -183,18 +183,15 @@ namespace OOOT_GUI
 
             // no rom found
             if (!IsValidRomAvailable(true))
-            {
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!");
                 return;
-            }
-            else
-            {
-                if (checkBox1.Checked)
-                    if (!Builder.ExtractAssets(GetRomVersion()))
-                        return;
 
-                Builder.Build(IsEurMqd());
-            }
+            // (optional) extract assets
+            if (checkBox1.Checked)
+                if (!Builder.ExtractAssets(GetRomVersion()))
+                    return;
+
+            // build OOOT
+            Builder.Build(IsEurMqd());
         }
 
         private void button8_Click(object sender, EventArgs e) // All-in-one
@@ -337,10 +334,7 @@ namespace OOOT_GUI
         {
             // no rom found
             if (!IsValidRomAvailable(false))
-            {
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!", "Error!");
                 return;
-            }
 
             // download/install tools
             if (installTools)
@@ -470,6 +464,10 @@ namespace OOOT_GUI
                 isEurMqd = true;
 
             bool value = !string.IsNullOrEmpty(Builder.GetRomFilename(isEurMqd)) || Builder.IsRomInRomsFolder(isEurMqd, false);
+
+            if (!value && showErrorMessage)
+                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!", "Error!");
+
             return value;
         }
 
