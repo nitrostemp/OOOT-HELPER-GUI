@@ -160,7 +160,7 @@
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.pathToolStripMenuItem.Text = "Paths";
             this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
             // 
@@ -170,20 +170,20 @@
             this.brightToolStripMenuItem,
             this.darkToolStripMenuItem});
             this.setThemeToolStripMenuItem.Name = "setThemeToolStripMenuItem";
-            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.setThemeToolStripMenuItem.Text = "Set Theme";
             // 
             // brightToolStripMenuItem
             // 
             this.brightToolStripMenuItem.Name = "brightToolStripMenuItem";
-            this.brightToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.brightToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.brightToolStripMenuItem.Text = "Bright";
             this.brightToolStripMenuItem.Click += new System.EventHandler(this.brightToolStripMenuItem_Click);
             // 
             // darkToolStripMenuItem
             // 
             this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
-            this.darkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.darkToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.darkToolStripMenuItem.Text = "Dark";
             this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
             // 
@@ -383,7 +383,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.51";
+            this.Text = "OOOT BUILD GUI ver 0.52";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
