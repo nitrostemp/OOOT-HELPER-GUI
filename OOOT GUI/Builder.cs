@@ -219,7 +219,7 @@ namespace OOOT_GUI
                     return false;
             }
 
-            CMD($"/C setup.py -b {romVersion} -c", GetOootPath(), true);
+            CMD($"/C python setup.py -c -b {romVersion}", GetOootPath(), true);
 
             return true;
         }
@@ -282,12 +282,13 @@ namespace OOOT_GUI
         /// <summary>
         /// Copy ROM from Builder folder to 'ooot\roms\xxx_xxx\'
         /// </summary>
-        public static bool CopyRom(string filename, string romVersion)
+        public static bool CopyRom(string filename, string romVersion, bool showErrorMessage = true)
         {
             string romDirPath = Path.Combine(GetOootPath(), @"roms\" + romVersion + @"\");
             if (!Directory.Exists(romDirPath))
             {
-                MessageBox.Show($"Can't copy ROM because OOOT roms directory is missing!", "Error!");
+                if (showErrorMessage)
+                    MessageBox.Show($"Can't copy ROM because OOOT roms directory is missing!", "Error!");
                 return false;
             }
 

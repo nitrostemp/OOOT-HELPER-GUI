@@ -333,7 +333,7 @@ namespace OOOT_GUI
         private void DoFullSetup(bool installTools)
         {
             // no rom found
-            if (!IsValidRomAvailable(true))
+            if (!IsValidRomAvailable(false))
                 return;
 
             // download/install tools
@@ -433,7 +433,14 @@ namespace OOOT_GUI
             else if (romVersion == "EUR_MQD")
                 isEurMqd = true;
 
-            bool value = !string.IsNullOrEmpty(Builder.GetRomFilename(isEurMqd)) || Builder.IsRomInRomsFolder(isEurMqd, false);
+            // check if rom is in oot/roms folder, or copy if needed
+            bool value = Builder.IsRomInRomsFolder(isEurMqd, false);
+            if (!value)
+            {
+                value = !string.IsNullOrEmpty(Builder.GetRomFilename(isEurMqd));
+                if (value)
+                    Builder.CopyRom(Builder.GetRomFilename(isEurMqd), Builder.GetRomVersion(isEurMqd), showErrorMessage);
+            }
 
             if (!value && showErrorMessage)
                 MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{Builder.GetRomVersion(IsEurMqd())} folders!", "Error!");
