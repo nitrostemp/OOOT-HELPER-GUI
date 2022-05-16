@@ -128,7 +128,7 @@ namespace OOOT_GUI
                 if (B < 0) B = 0;
 
                 Color darkerColor = Color.FromArgb(R, G, B);
-                
+
                 if (control is Button || control is ComboBox || control is MenuStrip)
                     control.BackColor = darkerColor;
             }
@@ -183,18 +183,15 @@ namespace OOOT_GUI
 
             // no rom found
             if (!IsValidRomAvailable(true))
-            {
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!");
                 return;
-            }
-            else
-            {
-                if (checkBox1.Checked)
-                    if (!Builder.ExtractAssets(GetRomVersion()))
-                        return;
 
-                Builder.Build(IsEurMqd());
-            }
+            // (optional) extract assets
+            if (checkBox1.Checked)
+                if (!Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd())))
+                    return;
+
+            // build OOOT
+            Builder.Build(IsEurMqd());
         }
 
         private void button8_Click(object sender, EventArgs e) // All-in-one
@@ -252,12 +249,12 @@ namespace OOOT_GUI
 
         private void copyRomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.CopyRom(GetRomFilename(), GetRomVersion());
+            Builder.CopyRom(Builder.GetRomFilename(IsEurMqd()), Builder.GetRomVersion(IsEurMqd()));
         }
 
         private void extractAssetsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.ExtractAssets(GetRomVersion());
+            Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd()));
         }
 
         private void createShortcutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -327,7 +324,7 @@ namespace OOOT_GUI
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Builder.SaveSettings(GetRomVersion(), checkBox1.Checked.ToString());
+            Builder.SaveSettings(Builder.GetRomVersion(IsEurMqd()), checkBox1.Checked.ToString());
         }
 
         /// <summary>
@@ -336,11 +333,8 @@ namespace OOOT_GUI
         private void DoFullSetup(bool installTools)
         {
             // no rom found
-            if (!IsValidRomAvailable(false))
-            {
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{GetRomVersion()} folders!", "Error!");
+            if (!IsValidRomAvailable(true))
                 return;
-            }
 
             // download/install tools
             if (installTools)
@@ -354,10 +348,10 @@ namespace OOOT_GUI
             UpdateUI();
 
             // copy rom
-            Builder.CopyRom(GetRomFilename(), GetRomVersion());
+            Builder.CopyRom(Builder.GetRomFilename(IsEurMqd()), Builder.GetRomVersion(IsEurMqd()));
 
             // extract assets
-            Builder.ExtractAssets(GetRomVersion());
+            Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd()));
 
             // build
             Builder.Build(IsEurMqd());
@@ -421,36 +415,6 @@ namespace OOOT_GUI
             return result;
         }
 
-        private string GetRomFilename()
-        {
-            bool isEurMqd = IsEurMqd();
-            string path = Builder.GetBuilderPath();
-
-            // get rom files (.z64 first, then .n64 and .v64)
-            List<string> files = new List<string>();
-            files.AddRange(Directory.GetFiles(path, "*.z64"));
-            files.AddRange(Directory.GetFiles(path, "*.n64"));
-            files.AddRange(Directory.GetFiles(path, "*.v64"));
-
-            if (files.Count > 0)
-            {
-                foreach (string file in files)
-                {
-                    string md5Hash = Builder.CalculateMD5(file);
-
-                    if (isEurMqd && Builder.Md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && Builder.Md5HashesPal.Contains(md5Hash))
-                        return Path.GetFileName(file);
-                }
-            }
-
-            return "";
-        }
-
-        private string GetRomVersion()
-        {
-            return IsEurMqd() ? "EUR_MQD" : "PAL_1.0";
-        }
-
         private bool IsEurMqd()
         {
             return comboBox1.SelectedIndex == 1;
@@ -470,6 +434,10 @@ namespace OOOT_GUI
                 isEurMqd = true;
 
             bool value = !string.IsNullOrEmpty(Builder.GetRomFilename(isEurMqd)) || Builder.IsRomInRomsFolder(isEurMqd, false);
+
+            if (!value && showErrorMessage)
+                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{Builder.GetRomVersion(IsEurMqd())} folders!", "Error!");
+
             return value;
         }
 

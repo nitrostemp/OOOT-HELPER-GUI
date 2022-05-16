@@ -11,9 +11,9 @@ namespace OOOT_GUI
 {
     public class Builder
     {
-        // Directory containing 'ooot' folder.
-        public static string InstallDir = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%");
-        public static string TempDownloadDir = Path.Combine(GetBuilderPath(), "ooot_temp");
+        // Builder Settings
+        public static string InstallDir = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%"); // Directory containing 'ooot' folder.
+        public static string TempDownloadDir = Path.Combine(GetBuilderPath(), "ooot_temp"); // Temporary Tools download folder.
         public static string CurrentBranch = "dev";
 
         // Valid ROM Hashes (.z64, .n64, .v64)
@@ -227,8 +227,15 @@ namespace OOOT_GUI
         public static void LaunchGame()
         {
             string exePath = GetOootExePath();
+
             if (System.IO.File.Exists(exePath))
-                Process.Start(exePath);
+            {
+                Process p = new Process();
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.WorkingDirectory = Path.GetDirectoryName(exePath);
+                p.StartInfo.FileName = exePath;
+                p.Start();
+            }
             else
                 MessageBox.Show($"No OOT.exe found! ({exePath})", "Error!");
         }
@@ -601,7 +608,7 @@ namespace OOOT_GUI
 
             // get rom files (.z64 first, then .n64 and .v64)
             List<string> files = new List<string>();
-            files.AddRange(Directory.GetFiles(path, " *.z64"));
+            files.AddRange(Directory.GetFiles(path, "*.z64"));
             files.AddRange(Directory.GetFiles(path, "*.n64"));
             files.AddRange(Directory.GetFiles(path, "*.v64"));
 
