@@ -17,8 +17,8 @@ namespace OOOT_GUI
         public static string CurrentBranch = "dev";
 
         // Valid ROM Hashes (.z64, .n64, .v64)
-        public static string[] Md5HashesPal = { "e040de91a74b61e3201db0e2323f768a", "f8ef2f873df415fc197f4a9837d7e353", "9526b263b60577d8ed22fb7a33c2facd" };
-        public static string[] Md5HashesEurMqd = { "f751d1a097764e2337b1ac9ba1e27699", "ce96bd52cb092d8145fb875d089fa925", "cbd40c8fb47404678b97cba50d2af495" };
+        public static string[] Md5HashesPal = { "e040de91a74b61e3201db0e2323f768a", "f8ef2f873df415fc197f4a9837d7e353", "9526b263b60577d8ed22fb7a33c2facd", "c02c1d79679f7ceb9a3bde55fff8aa13" };
+        public static string[] Md5HashesEurMqd = { "f751d1a097764e2337b1ac9ba1e27699", "f0b7f35375f9cc8ca1b2d59d78e35405", "8ca71e87de4ce5e9f6ec916202a623e9", "ce96bd52cb092d8145fb875d089fa925", "cbd40c8fb47404678b97cba50d2af495" };
 
         private static string GetSettingsSavePath()
         {
