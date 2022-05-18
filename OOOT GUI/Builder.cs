@@ -306,21 +306,11 @@ namespace OOOT_GUI
         /// </summary>
         public static string GetCommitSummary()
         {
+            string oootPath = GetOootPath();
             string output = "";
-            if (Directory.Exists(GetOootPath()))
-            {
-                Process p = new Process();
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.FileName = "CMD.exe";
-                p.StartInfo.WorkingDirectory = Builder.GetOootPath();
-                p.StartInfo.Arguments = "/C git show --summary .";
-                p.Start();
 
-                output = p.StandardOutput.ReadToEnd();
-                p.WaitForExit();
-            }
+            if (Directory.Exists(oootPath))
+                output = GetCmdOutput("/C git show --summary .", oootPath);
 
             return output;
         }
