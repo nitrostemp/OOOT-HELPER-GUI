@@ -528,17 +528,8 @@ namespace OOOT_GUI
             if (string.IsNullOrEmpty(oootPath) || !Directory.Exists(oootPath)) // does 'ooot' folder exist?
                 return false;
 
-            // get output from git summary in 'ooot' folder
-            Process p = new Process();
-            p.StartInfo.FileName = "CMD.exe";
-            p.StartInfo.Arguments = "/C git show --summary .";
-            p.StartInfo.WorkingDirectory = oootPath;
-            p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.Start();
-            string output = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
+            // get coutput from git summary in 'ooot' folder
+            string output = GetCmdOutput("/C git show --summary .", oootPath);
 
             // is 'ooot' folder a valid git repo?
             if (string.IsNullOrEmpty(output) || output.StartsWith("fatal:"))
