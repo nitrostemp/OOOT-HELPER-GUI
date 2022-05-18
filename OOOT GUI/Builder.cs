@@ -600,7 +600,7 @@ namespace OOOT_GUI
                 {
                     string md5Hash = CalculateMD5(file);
 
-                    if (isEurMqd && Builder.Md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && Builder.Md5HashesPal.Contains(md5Hash))
+                    if (isEurMqd && Md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && Md5HashesPal.Contains(md5Hash))
                         return true;
                 }
             }
