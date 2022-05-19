@@ -74,15 +74,18 @@ namespace OOOT_GUI
         /// Clone Repository
         public static bool Clone()
         {
+            Log.Message("Going to clone repository.");
+
             if (!Directory.Exists(InstallDir)) // create dir if it doesn't exist
             {
                 try
                 {
                     Directory.CreateDirectory(InstallDir);
+                    Log.Message("Created directory: " + InstallDir);
                 }
                 catch
                 {
-                    MessageBox.Show($"Error: Invalid installation directory. {InstallDir}", "Error!");
+                    ShowError($"Error: Invalid installation directory. {InstallDir}");
                     return false;
                 }
             }
@@ -90,7 +93,7 @@ namespace OOOT_GUI
             // directory exists, but is not empty, delete?
             if (Directory.Exists(GetOootPath()) && !DoesRepositoryExist())
             {
-                MessageBox.Show($"Can't clone because target directory is not empty! ({GetOootPath()})", "Error!");
+                ShowError($"Can't clone because target directory is not empty! ({GetOootPath()})");
 
                 // delete directory and continue?
                 if (!DeleteRepo())
@@ -101,12 +104,16 @@ namespace OOOT_GUI
             if (string.IsNullOrEmpty(CurrentBranch))
                 CurrentBranch = "master";
 
+            Log.Message("Cloning branch: " + CurrentBranch);
+
             // run command and get exit code
             int exitCode = CMD($"/C git clone --recursive -b {CurrentBranch} https://github.com/blawar/ooot.git", InstallDir);
 
             // process was aborted by user
             if (WasProcessAborted(exitCode))
             {
+                Log.Message("Cloning aborted by user.");
+
                 // delete downloaded files
                 if (!DoesRepositoryExist() && Directory.Exists(GetOootPath()))
                 {
@@ -120,20 +127,28 @@ namespace OOOT_GUI
                 return false;
             }
 
+            Log.Message("Cloned repository succesfully.");
+
             return true;
         }
 
         /// Git Pull Repository
         public static void Update()
         {
+            Log.Message("Going to update repository.");
+
             if (!DoesRepositoryExist())
             {
+                Log.Message("No repository found, aborting update.");
+
                 if (MessageBox.Show("No repository found. Do you want to clone it?", "Error!", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     Clone();
                 return;
             }
 
             CMD("/C git pull", GetOootPath(), false);
+
+            Log.Message("Repository updated.");
         }
 
         /// Delete 'ooot' Folder
@@ -193,9 +208,13 @@ namespace OOOT_GUI
 
         public static void Build(bool isEurMqd)
         {
+            Log.Message($"Going to build OOOT (Version: {isEurMqd})");
+
             // check if repo exists
             if (!DoesRepositoryExist())
             {
+                Log.Message("Can't build, no repository found.");
+
                 // clone and continue building, or cancel and exit early
                 DialogResult result = MessageBox.Show("No repository found. Do you want to clone it?", "Error!", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
@@ -204,10 +223,14 @@ namespace OOOT_GUI
                     return;
             }
 
+            Log.Message("Build: Checking for roms in ooot/roms folder...");
+
             // check if correct rom is present in 'ooot\roms' folder
             // if not, try to find and copy it from the Builder folder
             if (!IsRomInRomsFolder(isEurMqd))
             {
+                Log.Message("Build: No rom found from ooot/roms, trying to copy from builder folder.");
+
                 string romFileName = GetRomFilename(isEurMqd);
                 string romVersion = GetRomVersion(isEurMqd);
 
@@ -225,17 +248,21 @@ namespace OOOT_GUI
 
             if (System.IO.File.Exists(GetOootExePath())) // compiled OK, create shortcut?
             {
+                Log.Message("Build succesfully!");
+
                 if (MessageBox.Show("OOOT compiled succesfully. Want to create shortcut?", "Finished", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     CreateShortcut();
             }
             else // compile FAILED
             {
-                MessageBox.Show("Error: Something went wrong when building.", "Error!");
+                ShowError("Error: Something went wrong when building.");
             }
         }
 
         public static bool ExtractAssets(string romVersion)
         {
+            Log.Message($"Going to extract assets (Version: {romVersion})");
+
             if (!DoesRepositoryExist())
             {
                 // clone and continue extracting asset, or cancel and exit early
@@ -243,11 +270,16 @@ namespace OOOT_GUI
                 if (result == DialogResult.Yes)
                     Clone();
                 else
+                {
+                    Log.Message("Extracting Assets aborted because no repository found!");
                     return false;
+                }
             }
 
             // run command and get exit code
             int exitCode = CMD($"/C setup.py -c -b {romVersion}", GetOootPath(), true);
+
+            Log.Message("Extracting assets completed; setup.py returned exit code: " + exitCode);
 
             return WasProcessAborted(exitCode);
         }
@@ -588,6 +620,7 @@ namespace OOOT_GUI
 
         public static int CMD(string command, string workingDir = "", bool showWindow = true)
         {
+            Log.Message($"CMD: {command} (WorkingDir: {workingDir})");
             Process p = new Process();
             p.StartInfo.FileName = "CMD.exe";
             p.StartInfo.Arguments = command;

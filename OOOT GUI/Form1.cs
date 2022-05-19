@@ -349,18 +349,30 @@ namespace OOOT_GUI
             string romVersion = Builder.GetRomVersion(isEurMqd);
             string romFilename = Builder.GetRomFilename(isEurMqd);
 
+            Log.Message("======== Do Full Setup ======== ");
+            Log.Message($"ROM Version: {romVersion}, Filename: {romFilename}\n");
+
             // no rom found
             if (!IsValidRomAvailable(false, romVersion))
+            {
+                EndFullSetupLog();
                 return;
+            }
 
             // download/install tools
             if (installTools)
                 if (!Builder.DownloadTools(true, true))
+                {
+                    EndFullSetupLog();
                     return;
+                }
 
             // clone repo
             if (!Builder.Clone())
+            {
+                EndFullSetupLog();
                 return;
+            }
 
             // update UI
             UpdateUI();
@@ -370,10 +382,20 @@ namespace OOOT_GUI
 
             // extract assets
             if (!Builder.ExtractAssets(romVersion))
+            {
+                EndFullSetupLog();
                 return;
+            }
 
             // build
             Builder.Build(isEurMqd);
+
+            EndFullSetupLog();
+        }
+
+        private void EndFullSetupLog()
+        {
+            Log.Message("===============================\n");
         }
 
         public void UpdateUI(object sender, EventArgs e)
@@ -466,7 +488,7 @@ namespace OOOT_GUI
             }
 
             if (!value && showErrorMessage)
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{romVersion} folders!", "Error!");
+                Builder.ShowError($"No valid ROM found from Builder or OOOT/roms/{romVersion} folders!");
 
             return value;
         }
