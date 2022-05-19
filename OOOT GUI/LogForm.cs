@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OOOT_GUI
@@ -37,6 +30,39 @@ namespace OOOT_GUI
             {
                 e.Cancel = true;
                 Hide();
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ClearText();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(richTextBox1.Text);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Save log to file";
+            sfd.DefaultExt = "txt";
+            sfd.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            sfd.FilterIndex = 1;
+            sfd.RestoreDirectory = true;
+            sfd.FileName = "builder_log.txt";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    System.IO.File.WriteAllText(sfd.FileName, richTextBox1.Text);
+                    MessageBox.Show("Saved log to: " + sfd.FileName);
+                }
+                catch
+                {
+                    MessageBox.Show("Error when saving log to file!", "Error!");
+                }
             }
         }
     }
