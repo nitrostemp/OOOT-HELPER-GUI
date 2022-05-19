@@ -360,10 +360,10 @@ namespace OOOT_GUI
             // get rom settings
             bool isEurMqd = IsEurMqd();
             string romVersion = Builder.GetRomVersion(isEurMqd);
-            string romPath = Builder.GetRomFilename(isEurMqd);
+            string romeFilename = Builder.GetRomFilename(isEurMqd);
 
             // copy rom
-            Builder.CopyRom(romPath, romVersion);
+            Builder.CopyRom(romeFilename, romVersion);
 
             // extract assets
             Builder.ExtractAssets(romVersion);

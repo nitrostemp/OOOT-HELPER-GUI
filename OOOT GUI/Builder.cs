@@ -178,16 +178,10 @@ namespace OOOT_GUI
             if (!IsRomInRomsFolder(isEurMqd))
             {
                 string romFileName = GetRomFilename(isEurMqd);
-                string romPath = Path.Combine(GetBuilderPath(), romFileName);
+                string romVersion = GetRomVersion(isEurMqd);
 
-                CopyRom(romFileName, romPath);
-
-                // no rom found from Builder folder, exit
-                if (string.IsNullOrEmpty(romFileName) || !System.IO.File.Exists(romPath))
-                {
-                    MessageBox.Show("No valid ROM found from OOOT or builder folder!", "Error!");
+                if (!CopyRom(romFileName, romVersion, true))
                     return;
-                }
             }
 
             string ootPath = GetOootPath();
