@@ -252,12 +252,18 @@ namespace OOOT_GUI
             if (WasProcessAborted(exitCode))
                 return; // user aborted building
 
-            if (System.IO.File.Exists(GetOootExePath())) // compiled OK, create shortcut?
+            if (System.IO.File.Exists(GetOootExePath())) // compiled OK, create shortcut and launch game?
             {
                 Log.Message("Built succesfully!");
 
-                if (MessageBox.Show("OOOT compiled succesfully. Want to create shortcut?", "Finished", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                DialogResult result = MessageBox.Show("OOOT compiled succesfully. Want to create shortcut?", "Finished", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
                     CreateShortcut();
+                else
+                {
+                    if (MessageBox.Show("Do you want to launch OpenOcarina?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        LaunchGame();
+                }
             }
             else // compile FAILED
             {
