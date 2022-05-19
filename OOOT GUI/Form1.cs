@@ -266,7 +266,13 @@ namespace OOOT_GUI
 
         private void copyRomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.CopyRom(Builder.GetRomFilename(IsEurMqd()), Builder.GetRomVersion(IsEurMqd()));
+            // get rom settings
+            bool isEurMqd = IsEurMqd();
+            string romVersion = Builder.GetRomVersion(isEurMqd);
+            string romFilename = Builder.GetRomFilename(isEurMqd);
+
+            // copy rom
+            Builder.CopyRom(romFilename, romVersion);
         }
 
         private void extractAssetsToolStripMenuItem_Click(object sender, EventArgs e)

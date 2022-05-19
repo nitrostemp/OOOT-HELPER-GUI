@@ -362,6 +362,7 @@ namespace OOOT_GUI
         {
             Log.Message($"Going to copy rom (Filename: {filename}, Version: {romVersion})");
 
+            // get path to directory containing roms
             string romDirPath = Path.Combine(GetOootPath(), @"roms\" + romVersion + @"\");
             if (!Directory.Exists(romDirPath))
             {
@@ -375,11 +376,23 @@ namespace OOOT_GUI
 
             if (System.IO.File.Exists(source))
             {
+                Log.Message($"Copying ROM from {source} to {destination}");
                 System.IO.File.Copy(source, destination, true);
-                Log.Message($"Copying file {source} to {destination}");
+                Log.Message($"Copied ROM from {source} to {destination}.");
+            }
+            else
+            {
+                Log.Message($"No ROM found from the Builder folder ({source})");
             }
 
-            return System.IO.File.Exists(source);
+            bool result = System.IO.File.Exists(destination);
+
+            if (result)
+                Log.Message($"Rom found from: {destination}");
+            else
+                Log.Message($"Error: No ROM found from: {destination}. Source path: {source}");
+
+            return result;
         }
 
         /// <summary>
