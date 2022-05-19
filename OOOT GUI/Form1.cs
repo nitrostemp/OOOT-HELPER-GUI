@@ -49,7 +49,7 @@ namespace OOOT_GUI
                 UpdateColorControls(c);
             }
 
-            // Form1 Menustrip
+            // Update Form1 Menustrip colors
             foreach (ToolStripMenuItem item in menuStrip1.Items)
             {
                 foreach (ToolStripMenuItem item2 in item.DropDownItems)
@@ -59,7 +59,7 @@ namespace OOOT_GUI
                 }
             }
 
-            // set theme selection menu items color
+            // Update MenuStrip theme selection menu items color
             darkToolStripMenuItem.BackColor = ColorBack;
             brightToolStripMenuItem.BackColor = ColorBack;
             darkToolStripMenuItem.ForeColor = ColorFore;
@@ -72,6 +72,18 @@ namespace OOOT_GUI
                 settingsForm.ForeColor = ColorFore;
 
                 foreach (Control c in settingsForm.Controls)
+                {
+                    UpdateColorControls(c);
+                }
+            }
+
+            // Update LogForm colors
+            if(logForm != null)
+            {
+                logForm.BackColor = ColorBack;
+                logForm.ForeColor = ColorFore;
+
+                foreach(Control c in logForm.Controls)
                 {
                     UpdateColorControls(c);
                 }
@@ -128,6 +140,9 @@ namespace OOOT_GUI
 
                 if (control is Button || control is ComboBox || control is MenuStrip)
                     control.BackColor = darkerColor;
+
+                if (control is TextBox || control is RichTextBox)
+                    control.BackColor = Color.Black;
             }
 
             foreach (Control subC in control.Controls)
@@ -355,22 +370,24 @@ namespace OOOT_GUI
             // no rom found
             if (!IsValidRomAvailable(false, romVersion))
             {
-                EndFullSetupLog();
+                EndFullSetupLog(false);
                 return;
             }
 
             // download/install tools
             if (installTools)
+            {
                 if (!Builder.DownloadTools(true, true))
                 {
-                    EndFullSetupLog();
+                    EndFullSetupLog(false);
                     return;
                 }
+            }
 
             // clone repo
             if (!Builder.Clone())
             {
-                EndFullSetupLog();
+                EndFullSetupLog(false);
                 return;
             }
 
@@ -383,18 +400,19 @@ namespace OOOT_GUI
             // extract assets
             if (!Builder.ExtractAssets(romVersion))
             {
-                EndFullSetupLog();
+                EndFullSetupLog(false);
                 return;
             }
 
             // build
             Builder.Build(isEurMqd);
 
-            EndFullSetupLog();
+            EndFullSetupLog(true);
         }
 
-        private void EndFullSetupLog()
+        private void EndFullSetupLog(bool completed)
         {
+            Log.Message(completed ? "Full Setup completed!" : "Full Setup failed!");
             Log.Message("===============================\n");
         }
 
