@@ -208,7 +208,7 @@ namespace OOOT_GUI
 
         public static void Build(bool isEurMqd)
         {
-            Log.Message($"Going to build OOOT (Version: {isEurMqd})");
+            Log.Message($"Going to build OOOT (Version: {GetRomVersion(isEurMqd)})");
 
             // check if repo exists
             if (!DoesRepositoryExist())
