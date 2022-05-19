@@ -169,32 +169,6 @@ namespace OOOT_GUI
 
         private void button5_Click(object sender, EventArgs e) // Compile
         {
-            // check if vs build tools install processes exist
-            bool block = false;
-            Process[] vsProcesses = Process.GetProcesses();
-            foreach (Process p in vsProcesses)
-            {
-                if (p.MainWindowTitle.Contains("Visual Studio Installer"))
-                    block = true;
-                else if (p.ProcessName == "vs_BuildTools")
-                    block = true;
-                else if (p.ProcessName == "vs_setup_bootstrapper")
-                    block = true;
-            }
-
-            // vs build tools processes detected, can't compile yet
-            if (block)
-            {
-                DialogResult result = MessageBox.Show("Wait for VS Build Tools to install before compiling.", "Error!", MessageBoxButtons.AbortRetryIgnore);
-                if (result == DialogResult.Abort)
-                    return;
-                if (result == DialogResult.Retry)
-                {
-                    button5_Click(sender, e);
-                    return;
-                }
-            }
-
             // no rom found
             if (!IsValidRomAvailable(true))
                 return;

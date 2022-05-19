@@ -214,6 +214,20 @@ namespace OOOT_GUI
 
         public static void Build(bool isEurMqd)
         {
+            // check if VsBuildTools are still installing, before compiling
+            DialogResult result = IsVsBuildToolsStillInstalling();
+
+            if (result == DialogResult.Retry)
+            {
+                Log.Message("Vs Build Tools is still installing, can't compile yet.");
+                Build(isEurMqd);
+                return;
+            }
+            else if (result == DialogResult.Abort)
+            {
+                return;
+            }
+
             Log.Message($"Going to build OOOT (Version: {GetRomVersion(isEurMqd)})");
 
             // check if repo exists
@@ -222,7 +236,7 @@ namespace OOOT_GUI
                 Log.Message("Can't build, no repository found.");
 
                 // clone and continue building, or cancel and exit early
-                DialogResult result = MessageBox.Show("No repository found. Do you want to clone it?", "Error!", MessageBoxButtons.YesNo);
+                result = MessageBox.Show("No repository found. Do you want to clone it?", "Error!", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                     Clone();
                 else
@@ -256,7 +270,7 @@ namespace OOOT_GUI
             {
                 Log.Message("Built succesfully!");
 
-                DialogResult result = MessageBox.Show("OOOT compiled succesfully. Want to create shortcut?", "Finished", MessageBoxButtons.YesNo);
+                result = MessageBox.Show("OOOT compiled succesfully. Want to create shortcut?", "Finished", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                     CreateShortcut();
                 else
@@ -387,7 +401,7 @@ namespace OOOT_GUI
                 System.IO.File.Copy(source, destination, true);
             }
             // rom is already in ooot/roms; no need to copy
-            else if(System.IO.File.Exists(destination))
+            else if (System.IO.File.Exists(destination))
             {
                 Log.Message($"Rom already exist in destination: {destination}");
                 return true;
@@ -712,6 +726,30 @@ namespace OOOT_GUI
         public static bool IsAllToolsInstalled()
         {
             return IsGitInstalled() && IsPythonInstalled() && IsVsBuildToolsInstalled();
+        }
+
+        public static DialogResult IsVsBuildToolsStillInstalling()
+        {
+            bool block = false;
+            Process[] vsProcesses = Process.GetProcesses();
+            foreach (Process p in vsProcesses)
+            {
+                if (p.MainWindowTitle.Contains("Visual Studio Installer"))
+                    block = true;
+                else if (p.ProcessName == "vs_BuildTools")
+                    block = true;
+                else if (p.ProcessName == "vs_setup_bootstrapper")
+                    block = true;
+            }
+
+            // vs build tools processes detected, can't compile yet
+            if (block)
+            {
+                DialogResult result = MessageBox.Show("Wait for VS Build Tools to install before compiling.", "Error!", MessageBoxButtons.AbortRetryIgnore);
+                return result;
+            }
+
+            return DialogResult.Ignore;
         }
 
         private static string GetCmdOutput(string command, string workingDir = "")
