@@ -13,6 +13,7 @@ namespace OOOT_GUI
         // Forms
         public static Form1 form1;
         private SettingsForm settingsForm;
+        private LogForm logForm;
 
         // Theme Settings
         public enum Theme { Bright, Dark };
@@ -144,6 +145,7 @@ namespace OOOT_GUI
         {
             form1 = this;
             settingsForm = new SettingsForm();
+            logForm = new LogForm();
             InitializeComponent();
             if (!Builder.LoadSettings())
                 ChangeTheme(Theme.Dark); // set default theme
@@ -544,6 +546,11 @@ namespace OOOT_GUI
         public void SetExtractAssetsCheckbox(bool value)
         {
             checkBox1.Checked = value;
+        }
+
+        private void viewLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            logForm.Show();
         }
     }
 }

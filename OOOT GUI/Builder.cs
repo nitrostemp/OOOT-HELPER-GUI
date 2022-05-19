@@ -268,14 +268,22 @@ namespace OOOT_GUI
                 MessageBox.Show($"No OOT.exe found! ({exePath})", "Error!");
         }
 
+        public static void ShowError(string message)
+        {
+            Log.Message("Error: " + message);
+            MessageBox.Show(message, "Error!");
+        }
+
         public static void CreateShortcut() // Create shortcut to OOOT
         {
+            Log.Message("Going to create shortcut to desktop.");
+
             string exePath = GetOootExePath();
 
             // show error and exit early, if no .exe found
             if (!System.IO.File.Exists(exePath))
             {
-                MessageBox.Show("Can't create shortcut, no OOT.exe found!", "Error!");
+                ShowError("Can't create shortcut, no OOT.exe found!");
                 return;
             }
 
@@ -293,17 +301,19 @@ namespace OOOT_GUI
 
                 if (System.IO.File.Exists(shortcutPath)) // succes, launch game?
                 {
+                    Log.Message("Desktop shortcut created.");
+
                     if (MessageBox.Show("Shortcut to OOOT created! Launch game?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         LaunchGame();
                 }
                 else // failure
                 {
-                    MessageBox.Show("Something went wrong, when trying to create shortcut!", "Error!");
+                    ShowError("Something went wrong, when trying to create shortcut!");
                 }
             }
             catch // even worse failure
             {
-                MessageBox.Show("ERROR: Something went wrong, when trying to create shortcut!", "Error!");
+                ShowError("ERROR: Something went wrong, when trying to create shortcut!");
             }
         }
 
@@ -312,11 +322,13 @@ namespace OOOT_GUI
         /// </summary>
         public static bool CopyRom(string filename, string romVersion, bool showErrorMessage = true)
         {
+            Log.Message($"Going to copy rom (filename: {filename}, version: {romVersion})");
+
             string romDirPath = Path.Combine(GetOootPath(), @"roms\" + romVersion + @"\");
             if (!Directory.Exists(romDirPath))
             {
                 if (showErrorMessage)
-                    MessageBox.Show($"Can't copy ROM because OOOT roms directory is missing!", "Error!");
+                    ShowError($"Can't copy ROM because OOOT roms directory is missing!");
                 return false;
             }
 
@@ -324,7 +336,10 @@ namespace OOOT_GUI
             string destination = Path.Combine(romDirPath + @"baserom_original.n64");
 
             if (System.IO.File.Exists(source))
+            {
                 System.IO.File.Copy(source, destination, true);
+                Log.Message($"Copying file {source} to {destination}");
+            }
 
             return System.IO.File.Exists(source);
         }
@@ -348,6 +363,8 @@ namespace OOOT_GUI
         /// </summary>
         public static bool DownloadTools(bool installTools, bool showMessages, bool ignoreInstalledCheck = false)
         {
+            Log.Message("Going to download tools.");
+
             bool git = false;
             bool python = false;
             bool vsBuild = false;
@@ -362,7 +379,10 @@ namespace OOOT_GUI
                 if (git && python && vsBuild)
                 {
                     if (showMessages)
+                    {
                         MessageBox.Show("All tools are already installed.");
+                        Log.Message("Tools already installed.");
+                    }
                     return true;
                 }
             }
@@ -370,7 +390,7 @@ namespace OOOT_GUI
             string tmpDir = GetTempDownloadPath(true);
             if (!Directory.Exists(tmpDir))
             {
-                MessageBox.Show($"Can't create temporary download directory for tools! ({tmpDir}", "Error!");
+                ShowError($"Can't create temporary download directory for tools! ({tmpDir}");
                 return false;
             }
 
@@ -421,6 +441,8 @@ namespace OOOT_GUI
         /// </summary>
         public static bool InstallTools(bool showMessages)
         {
+            Log.Message("Going to install tools.");
+
             bool git = IsGitInstalled();
             bool python = IsPythonInstalled();
             bool vsBuild = IsVsBuildToolsInstalled();
@@ -428,6 +450,7 @@ namespace OOOT_GUI
             // tools are already installed, show optional message and early exit
             if (git && python && vsBuild)
             {
+                Log.Message("Tools already installed.");
                 if (showMessages)
                     MessageBox.Show("All tools are already installed.");
                 return true;
@@ -437,7 +460,7 @@ namespace OOOT_GUI
             string tmpDir = GetTempDownloadPath(false);
             if (!Directory.Exists(tmpDir))
             {
-                MessageBox.Show($"Can't find temporary download directory for tools! ({tmpDir}", "Error!");
+                ShowError($"Can't find temporary download directory for tools! ({tmpDir}");
                 return false;
             }
 
@@ -480,24 +503,27 @@ namespace OOOT_GUI
             string htsFilename = "THE LEGEND OF ZELDA_HIRESTEXTURES.hts";
             string htsPath = Path.Combine(oootReleasePath, htsFilename);
 
+            Log.Message("Going to download texture pack from: " + texturePackUrl);
+
             // no release folder, exit
-            if (!System.IO.Directory.Exists(oootReleasePath))
+            if (!Directory.Exists(oootReleasePath))
             {
-                MessageBox.Show($"No OOOT 'Release' folder found! ({oootReleasePath})", "Error!");
+                ShowError($"No OOOT 'Release' folder found! ({oootReleasePath})");
                 return;
             }
 
             // no 7zr.exe, exit
             if (!System.IO.File.Exists(toolPath))
             {
-                MessageBox.Show($"No '7zr.exe' found from 'Builder/Tools' folder! ({toolPath})", "Error!");
+                ShowError($"No '7zr.exe' found from 'Builder/Tools' folder! ({toolPath})");
                 return;
             }
 
             // texture pack is already installed, exit
             if (System.IO.File.Exists(htsPath))
             {
-                MessageBox.Show("Texture pack is already installed!");
+                Log.Message("Texture pack is already installed.");
+                MessageBox.Show("Texture pack is already installed!");              
                 return;
             }
 
@@ -509,10 +535,11 @@ namespace OOOT_GUI
                     return; // user aborted downloading
             }
 
-
             // extract texture pack
             if (System.IO.File.Exists(texturePackPath))
             {
+                Log.Message("Texture pack download. Going to extract.");
+
                 Process p = new Process();
                 p.StartInfo.FileName = toolPath;
                 p.StartInfo.Arguments = $"e {texturePackPath}";
@@ -525,6 +552,8 @@ namespace OOOT_GUI
                 int exitCode = p.ExitCode;
                 if (WasProcessAborted(exitCode))
                 {
+                    Log.Message("Texture pack extracting aborted.");
+
                     // delete .7zip file
                     if (System.IO.File.Exists(texturePackPath))
                         System.IO.File.Delete(texturePackPath);
@@ -534,6 +563,8 @@ namespace OOOT_GUI
 
                 if (System.IO.File.Exists(htsPath)) // installed texture pack succesfully
                 {
+                    Log.Message("Texture pack installed.");
+
                     // delete .7zip file?
                     if (MessageBox.Show($"Texture pack installed! Do you want to delete '{texturePackFilename}'?", "Completed", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
@@ -544,13 +575,13 @@ namespace OOOT_GUI
                         }
                         catch
                         {
-                            MessageBox.Show($"Error when deleting {texturePackPath}!", "Error!");
+                            ShowError($"Error when deleting {texturePackPath}!");
                         }
                     }
                 }
                 else // failed texture pack install
                 {
-                    MessageBox.Show($"No file found! ({texturePackPath})", "Error!");
+                    ShowError($"No file found! ({texturePackPath})");
                 }
             }
         }
@@ -728,7 +759,10 @@ namespace OOOT_GUI
         {
             bool result = (exitCode == -1073741510);
             if (result)
+            {
+                Log.Message("Process aborted by user.");
                 MessageBox.Show("Process aborted!");
+            }
             return result;
         }
 

@@ -63,6 +63,7 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.viewLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -152,7 +153,8 @@
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathToolStripMenuItem,
-            this.setThemeToolStripMenuItem});
+            this.setThemeToolStripMenuItem,
+            this.viewLogToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(61, 20);
             this.toolStripMenuItem1.Text = "Settings";
@@ -160,7 +162,7 @@
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pathToolStripMenuItem.Text = "Paths";
             this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
             // 
@@ -170,7 +172,7 @@
             this.brightToolStripMenuItem,
             this.darkToolStripMenuItem});
             this.setThemeToolStripMenuItem.Name = "setThemeToolStripMenuItem";
-            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setThemeToolStripMenuItem.Text = "Set Theme";
             // 
             // brightToolStripMenuItem
@@ -369,6 +371,13 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Builder:";
             // 
+            // viewLogToolStripMenuItem
+            // 
+            this.viewLogToolStripMenuItem.Name = "viewLogToolStripMenuItem";
+            this.viewLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewLogToolStripMenuItem.Text = "View Log";
+            this.viewLogToolStripMenuItem.Click += new System.EventHandler(this.viewLogToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -431,6 +440,7 @@
         private System.Windows.Forms.ToolStripMenuItem setThemeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem brightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem darkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewLogToolStripMenuItem;
     }
 }
 
