@@ -43,6 +43,7 @@
             this.setThemeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.brightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.createShortcutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadHDTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -152,7 +153,8 @@
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathToolStripMenuItem,
-            this.setThemeToolStripMenuItem});
+            this.setThemeToolStripMenuItem,
+            this.viewLogToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(61, 20);
             this.toolStripMenuItem1.Text = "Settings";
@@ -160,7 +162,7 @@
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.pathToolStripMenuItem.Text = "Paths";
             this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
             // 
@@ -170,7 +172,7 @@
             this.brightToolStripMenuItem,
             this.darkToolStripMenuItem});
             this.setThemeToolStripMenuItem.Name = "setThemeToolStripMenuItem";
-            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setThemeToolStripMenuItem.Text = "Set Theme";
             // 
             // brightToolStripMenuItem
@@ -186,6 +188,13 @@
             this.darkToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
             this.darkToolStripMenuItem.Text = "Dark";
             this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
+            // 
+            // viewLogToolStripMenuItem
+            // 
+            this.viewLogToolStripMenuItem.Name = "viewLogToolStripMenuItem";
+            this.viewLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewLogToolStripMenuItem.Text = "View Log";
+            this.viewLogToolStripMenuItem.Click += new System.EventHandler(this.viewLogToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -383,7 +392,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.54";
+            this.Text = "OOOT BUILD GUI ver 0.6";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
@@ -431,6 +440,7 @@
         private System.Windows.Forms.ToolStripMenuItem setThemeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem brightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem darkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewLogToolStripMenuItem;
     }
 }
 
