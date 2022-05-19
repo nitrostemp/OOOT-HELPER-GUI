@@ -563,7 +563,10 @@ namespace OOOT_GUI
             // run command
             int exitCode = CMD(command, tmpDir, true);
 
-            return WasProcessAborted(exitCode);
+            if (WasProcessAborted(exitCode))
+                return false; // user canceled installing tools
+
+            return true;
         }
 
         /// <summary>
