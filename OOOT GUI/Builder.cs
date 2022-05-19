@@ -329,7 +329,7 @@ namespace OOOT_GUI
             string tmpDir = GetTempDownloadPath(true);
             if (!Directory.Exists(tmpDir))
             {
-                MessageBox.Show($"Can't create temporary download directory for tools! ({tmpDir}");
+                MessageBox.Show($"Can't create temporary download directory for tools! ({tmpDir}", "Error!");
                 return;
             }
 
@@ -389,7 +389,7 @@ namespace OOOT_GUI
             string tmpDir = GetTempDownloadPath(false);
             if (!Directory.Exists(tmpDir))
             {
-                MessageBox.Show($"Can't find temporary download directory for tools! ({tmpDir}");
+                MessageBox.Show($"Can't find temporary download directory for tools! ({tmpDir}", "Error!");
                 return;
             }
 
@@ -425,7 +425,7 @@ namespace OOOT_GUI
             string toolPath = Path.Combine(GetBuilderPath(), @"Tools\7zr.exe");
             string texturePackFilename = "oot-reloaded-v10.2.0-uhts-1080p.7z";
             string texturePackPath = Path.Combine(oootReleasePath, texturePackFilename);
-            string texturPackUrl = "https://evilgames.eu/texture-packs/files/" + texturePackFilename;
+            string texturePackUrl = "https://evilgames.eu/texture-packs/files/" + texturePackFilename;
             string htsFilename = "THE LEGEND OF ZELDA_HIRESTEXTURES.hts";
             string htsPath = Path.Combine(oootReleasePath, htsFilename);
 
@@ -452,7 +452,7 @@ namespace OOOT_GUI
 
             // download texture pack
             if (!System.IO.File.Exists(texturePackPath))
-                CMD(@"/C echo Downloading texture pack from " + texturPackUrl + " && echo Downloading to: %cd% && echo. && curl -LJO https://evilgames.eu/texture-packs/files/" + texturePackFilename, oootReleasePath);
+                CMD($"/C echo Downloading texture pack from {texturePackUrl} && echo Downloading to: %cd% && echo. && curl -LJO {texturePackUrl}", oootReleasePath);
 
             // extract texture pack
             if (System.IO.File.Exists(texturePackPath))
@@ -483,7 +483,7 @@ namespace OOOT_GUI
                 }
                 else // failed texture pack install
                 {
-                    MessageBox.Show($"No file found! ({texturePackPath})");
+                    MessageBox.Show($"No file found! ({texturePackPath})", "Error!");
                 }
             }
         }
@@ -512,7 +512,7 @@ namespace OOOT_GUI
             if (string.IsNullOrEmpty(oootPath) || !Directory.Exists(oootPath)) // does 'ooot' folder exist?
                 return false;
 
-            // get coutput from git summary in 'ooot' folder
+            // get output from 'git summary' in 'ooot' folder
             string output = GetCmdOutput("/C git show --summary .", oootPath);
 
             // is 'ooot' folder a valid git repo?
