@@ -248,7 +248,7 @@ namespace OOOT_GUI
 
             if (System.IO.File.Exists(GetOootExePath())) // compiled OK, create shortcut?
             {
-                Log.Message("Build succesfully!");
+                Log.Message("Built succesfully!");
 
                 if (MessageBox.Show("OOOT compiled succesfully. Want to create shortcut?", "Finished", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     CreateShortcut();
@@ -281,7 +281,7 @@ namespace OOOT_GUI
 
             Log.Message("Extracting assets completed; setup.py returned exit code: " + exitCode);
 
-            return WasProcessAborted(exitCode);
+            return !WasProcessAborted(exitCode);
         }
 
         public static void LaunchGame()
@@ -354,7 +354,7 @@ namespace OOOT_GUI
         /// </summary>
         public static bool CopyRom(string filename, string romVersion, bool showErrorMessage = true)
         {
-            Log.Message($"Going to copy rom (filename: {filename}, version: {romVersion})");
+            Log.Message($"Going to copy rom (Filename: {filename}, Version: {romVersion})");
 
             string romDirPath = Path.Combine(GetOootPath(), @"roms\" + romVersion + @"\");
             if (!Directory.Exists(romDirPath))
