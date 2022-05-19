@@ -315,7 +315,7 @@ namespace OOOT_GUI
         public static void ShowError(string message)
         {
             Log.Message("Error: " + message);
-            MessageBox.Show(message, "Error!");
+            MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         public static void CreateShortcut() // Create shortcut to OOOT
@@ -380,11 +380,17 @@ namespace OOOT_GUI
             string source = Path.Combine(GetBuilderPath(), filename); // TODO: custom rom path
             string destination = Path.Combine(romDirPath + @"baserom_original.n64");
 
-            if (System.IO.File.Exists(source))
+            // rom is in builder folder, but not in ooot/roms; copy
+            if (System.IO.File.Exists(source) && !System.IO.File.Exists(destination))
             {
                 Log.Message($"Copying ROM from {source} to {destination}");
                 System.IO.File.Copy(source, destination, true);
-                Log.Message($"Copied ROM from {source} to {destination}.");
+            }
+            // rom is already in ooot/roms; no need to copy
+            else if(System.IO.File.Exists(destination))
+            {
+                Log.Message($"Rom already exist in destination: {destination}");
+                return true;
             }
             else
             {
@@ -396,7 +402,7 @@ namespace OOOT_GUI
             if (result)
                 Log.Message($"Rom found from: {destination}");
             else
-                Log.Message($"Error: No ROM found from: {destination}. Source path: {source}");
+                Log.Message($"No ROM found from: {destination}");
 
             return result;
         }
@@ -438,7 +444,7 @@ namespace OOOT_GUI
                     if (showMessages)
                     {
                         MessageBox.Show("All tools are already installed.");
-                        Log.Message("Tools already installed.");
+                        Log.Message("Tools are already installed.");
                     }
                     return true;
                 }
@@ -484,7 +490,7 @@ namespace OOOT_GUI
             // execute command(s)
             int exitCode = CMD(command, tmpDir, true);
             if (WasProcessAborted(exitCode))
-                return false; // use canceled download, exit.
+                return false; // user canceled download, exit.
 
             // install tool after download, if set so
             if (installTools)

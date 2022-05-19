@@ -78,12 +78,12 @@ namespace OOOT_GUI
             }
 
             // Update LogForm colors
-            if(logForm != null)
+            if (logForm != null)
             {
                 logForm.BackColor = ColorBack;
                 logForm.ForeColor = ColorFore;
 
-                foreach(Control c in logForm.Controls)
+                foreach (Control c in logForm.Controls)
                 {
                     UpdateColorControls(c);
                 }
@@ -376,18 +376,23 @@ namespace OOOT_GUI
             // no rom found
             if (!IsValidRomAvailable(false, romVersion))
             {
+                Builder.ShowError($"No valid ROM found from Builder or OOOT/roms/{romVersion} folders!");
                 EndFullSetupLog(false);
                 return;
             }
 
             // download/install tools
-            if (installTools)
+            if (installTools && !Builder.IsAllToolsInstalled())
             {
                 if (!Builder.DownloadTools(true, true))
                 {
                     EndFullSetupLog(false);
                     return;
                 }
+            }
+            else
+            {
+                Log.Message("Tools are already installed.");
             }
 
             // clone repo
