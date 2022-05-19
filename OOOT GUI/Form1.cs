@@ -293,6 +293,7 @@ namespace OOOT_GUI
         private void pathToolStripMenuItem_Click(object sender, EventArgs e)
         {
             settingsForm.Show();
+            settingsForm.WindowState = FormWindowState.Normal;
         }
 
         private void gitHubToolStripMenuItem_Click(object sender, EventArgs e)
@@ -353,6 +354,12 @@ namespace OOOT_GUI
         private void darkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ChangeTheme(Theme.Dark);
+        }
+
+        private void viewLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            logForm.Show();
+            logForm.WindowState = FormWindowState.Normal;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -597,11 +604,6 @@ namespace OOOT_GUI
         public void SetExtractAssetsCheckbox(bool value)
         {
             checkBox1.Checked = value;
-        }
-
-        private void viewLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            logForm.Show();
         }
     }
 }
