@@ -102,11 +102,7 @@ namespace OOOT_GUI
             if (!DoesRepositoryExist())
             {
                 if (MessageBox.Show("No repository found. Do you want to clone it?", "Error!", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
                     Clone();
-                    return;
-                }
-
                 return;
             }
 

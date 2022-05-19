@@ -450,7 +450,7 @@ namespace OOOT_GUI
 
             // update rom version    
             romVersion = Builder.GetRomVersion(isEurMqd);
-   
+
             // check if rom is in oot/roms folder, or copy from Builder if needed
             bool value = Builder.IsRomInRomsFolder(isEurMqd, false);
             if (!value)
