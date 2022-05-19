@@ -448,17 +448,17 @@ namespace OOOT_GUI
             else if (romVersion == "EUR_MQD")
                 isEurMqd = true;
 
-            // get / update rom settings
-            string romPath = Builder.GetRomFilename(isEurMqd);
+            // update rom version    
             romVersion = Builder.GetRomVersion(isEurMqd);
-          
-            // check if rom is in oot/roms folder, or copy if needed
+   
+            // check if rom is in oot/roms folder, or copy from Builder if needed
             bool value = Builder.IsRomInRomsFolder(isEurMqd, false);
             if (!value)
             {
-                value = !string.IsNullOrEmpty(romPath);
+                string romFilename = Builder.GetRomFilename(isEurMqd);
+                value = !string.IsNullOrEmpty(romFilename);
                 if (value)
-                    Builder.CopyRom(romPath, romVersion, showErrorMessage);
+                    Builder.CopyRom(romFilename, romVersion, showErrorMessage);
             }
 
             if (!value && showErrorMessage)

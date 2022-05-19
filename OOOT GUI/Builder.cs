@@ -219,7 +219,7 @@ namespace OOOT_GUI
                     return false;
             }
 
-            CMD($"/C python setup.py -c -b {romVersion}", GetOootPath(), true);
+            CMD($"/C setup.py -c -b {romVersion}", GetOootPath(), true);
 
             return true;
         }
