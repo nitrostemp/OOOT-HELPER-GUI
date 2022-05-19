@@ -15,7 +15,7 @@ namespace OOOT_GUI
         private SettingsForm settingsForm;
 
         // Theme Settings
-        public enum Theme { Bright, Dark, Custom };
+        public enum Theme { Bright, Dark };
         public Theme CurrentTheme = Theme.Bright;
         private Color ColorBack = Color.FromArgb(240, 240, 240);
         private Color ColorFore = Color.FromArgb(0, 0, 0);
@@ -32,10 +32,6 @@ namespace OOOT_GUI
                     ColorFore = Color.FromArgb(0, 0, 0);
                     break;
                 case Theme.Dark:
-                    ColorBack = Color.FromArgb(32, 33, 36);
-                    ColorFore = Color.FromArgb(177, 177, 177);
-                    break;
-                case Theme.Custom: // TODO: TEMP
                     ColorBack = Color.FromArgb(32, 33, 36);
                     ColorFore = Color.FromArgb(177, 177, 177);
                     break;
@@ -116,7 +112,7 @@ namespace OOOT_GUI
                 control.ForeColor = ColorFore;
             }
 
-            // make dark theme buttons and combobox darker
+            // make some dark theme elements darker
             if (CurrentTheme == Theme.Dark)
             {
                 int R = ColorBack.R - 7;
@@ -149,7 +145,8 @@ namespace OOOT_GUI
             form1 = this;
             settingsForm = new SettingsForm();
             InitializeComponent();
-            Builder.LoadSettings();
+            if (!Builder.LoadSettings())
+                ChangeTheme(Theme.Dark); // set default theme
             UpdateUI();
         }
 
@@ -185,13 +182,16 @@ namespace OOOT_GUI
             if (!IsValidRomAvailable(true))
                 return;
 
+            bool isEurMqd = IsEurMqd();
+            string romVersion = Builder.GetRomVersion(isEurMqd);
+
             // (optional) extract assets
             if (checkBox1.Checked)
-                if (!Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd())))
+                if (!Builder.ExtractAssets(romVersion))
                     return;
 
             // build OOOT
-            Builder.Build(IsEurMqd());
+            Builder.Build(isEurMqd);
         }
 
         private void button8_Click(object sender, EventArgs e) // All-in-one
@@ -239,7 +239,7 @@ namespace OOOT_GUI
 
         private void downloadToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.DownloadTools(false, true);
+            Builder.DownloadTools(false, true, true);
         }
 
         private void installToolsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -342,13 +342,19 @@ namespace OOOT_GUI
         /// </summary>
         private void DoFullSetup(bool installTools)
         {
+            // get rom settings
+            bool isEurMqd = IsEurMqd();
+            string romVersion = Builder.GetRomVersion(isEurMqd);
+            string romFilename = Builder.GetRomFilename(isEurMqd);
+
             // no rom found
-            if (!IsValidRomAvailable(false))
+            if (!IsValidRomAvailable(false, romVersion))
                 return;
 
             // download/install tools
             if (installTools)
-                Builder.DownloadTools(true, true);
+                if (!Builder.DownloadTools(true, true))
+                    return;
 
             // clone repo
             if (!Builder.Clone())
@@ -357,16 +363,12 @@ namespace OOOT_GUI
             // update UI
             UpdateUI();
 
-            // get rom settings
-            bool isEurMqd = IsEurMqd();
-            string romVersion = Builder.GetRomVersion(isEurMqd);
-            string romFilename = Builder.GetRomFilename(isEurMqd);
-
             // copy rom
             Builder.CopyRom(romFilename, romVersion);
 
             // extract assets
-            Builder.ExtractAssets(romVersion);
+            if (!Builder.ExtractAssets(romVersion))
+                return;
 
             // build
             Builder.Build(isEurMqd);

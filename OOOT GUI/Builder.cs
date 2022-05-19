@@ -74,7 +74,7 @@ namespace OOOT_GUI
         /// Clone Repository
         public static bool Clone()
         {
-            if (!Directory.Exists(InstallDir))
+            if (!Directory.Exists(InstallDir)) // create dir if it doesn't exist
             {
                 try
                 {
@@ -82,16 +82,43 @@ namespace OOOT_GUI
                 }
                 catch
                 {
-                    MessageBox.Show("Error: Invalid installation directory.", "Error!");
+                    MessageBox.Show($"Error: Invalid installation directory. {InstallDir}", "Error!");
                     return false;
                 }
+            }
+
+            // directory exists, but is not empty, delete?
+            if (Directory.Exists(GetOootPath()) && !DoesRepositoryExist())
+            {
+                MessageBox.Show($"Can't clone because target directory is not empty! ({GetOootPath()})", "Error!");
+
+                // delete directory and continue?
+                if (!DeleteRepo())
+                    return false;
             }
 
             // default to master branch in case of empty string
             if (string.IsNullOrEmpty(CurrentBranch))
                 CurrentBranch = "master";
 
-            CMD($"/C git clone --recursive -b {CurrentBranch} https://github.com/blawar/ooot.git", InstallDir);
+            // run command and get exit code
+            int exitCode = CMD($"/C git clone --recursive -b {CurrentBranch} https://github.com/blawar/ooot.git", InstallDir);
+
+            // process was aborted by user
+            if (WasProcessAborted(exitCode))
+            {
+                // delete downloaded files
+                if (!DoesRepositoryExist() && Directory.Exists(GetOootPath()))
+                {
+                    try
+                    {
+                        DeleteRepo();
+                    }
+                    catch { }
+                }
+
+                return false;
+            }
 
             return true;
         }
@@ -110,13 +137,13 @@ namespace OOOT_GUI
         }
 
         /// Delete 'ooot' Folder
-        public static void DeleteRepo()
+        public static bool DeleteRepo()
         {
             string oootPath = GetOootPath();
             if (!Directory.Exists(oootPath))
             {
-                MessageBox.Show("No repository found!", "Error!");
-                return;
+                MessageBox.Show($"Can't delete repository, because directory not found! {oootPath})", "Error!");
+                return false;
             }
 
             // Confirmation window
@@ -130,10 +157,18 @@ namespace OOOT_GUI
                 catch { }
 
                 if (!Directory.Exists(oootPath)) // success
+                {
                     MessageBox.Show("Repository deleted!");
+                    return true;
+                }
                 else // failure
+                {
                     MessageBox.Show("Something went wrong when deleting the repository!", "Error!");
+                    return false;
+                }
             }
+
+            return false;
         }
 
         private static void DeleteDirectory(string path)
@@ -181,10 +216,12 @@ namespace OOOT_GUI
             }
 
             string ootPath = GetOootPath();
-
-            // build
             string driveLetter = ootPath[0].ToString() + ":";
-            CMD($"/C compile.bat {driveLetter} {ootPath}", GetToolsPath());
+
+            // run build script
+            int exitCode = CMD($"/C compile.bat {driveLetter} {ootPath}", GetToolsPath());
+            if (WasProcessAborted(exitCode))
+                return; // user aborted building
 
             if (System.IO.File.Exists(GetOootExePath())) // compiled OK, create shortcut?
             {
@@ -209,9 +246,10 @@ namespace OOOT_GUI
                     return false;
             }
 
-            CMD($"/C setup.py -c -b {romVersion}", GetOootPath(), true);
+            // run command and get exit code
+            int exitCode = CMD($"/C setup.py -c -b {romVersion}", GetOootPath(), true);
 
-            return true;
+            return WasProcessAborted(exitCode);
         }
 
         public static void LaunchGame()
@@ -308,25 +346,32 @@ namespace OOOT_GUI
         /// <summary>
         /// Download (and optionally install) build tools.
         /// </summary>
-        public static void DownloadTools(bool installTools, bool showMessages)
+        public static bool DownloadTools(bool installTools, bool showMessages, bool ignoreInstalledCheck = false)
         {
-            bool git = IsGitInstalled();
-            bool python = IsPythonInstalled();
-            bool vsBuild = IsVsBuildToolsInstalled();
+            bool git = false;
+            bool python = false;
+            bool vsBuild = false;
 
-            // tools are already installed, show optional message and early exit
-            if (git && python && vsBuild)
+            if (!ignoreInstalledCheck)
             {
-                if (showMessages)
-                    MessageBox.Show("All tools are already installed.");
-                return;
+                git = IsGitInstalled();
+                python = IsPythonInstalled();
+                vsBuild = IsVsBuildToolsInstalled();
+
+                // tools are already installed, show optional message and early exit
+                if (git && python && vsBuild)
+                {
+                    if (showMessages)
+                        MessageBox.Show("All tools are already installed.");
+                    return true;
+                }
             }
 
             string tmpDir = GetTempDownloadPath(true);
             if (!Directory.Exists(tmpDir))
             {
                 MessageBox.Show($"Can't create temporary download directory for tools! ({tmpDir}", "Error!");
-                return;
+                return false;
             }
 
             // create download commands for tools
@@ -343,12 +388,15 @@ namespace OOOT_GUI
                 tool3 = "echo 'Git-2.36.0-64-bit.exe' is already downloaded, skipping...";
 
             // override commands, if tools are already installed
-            if (IsGitInstalled())
-                tool3 = "echo Git is already installed, skipping...";
-            if (IsPythonInstalled())
-                tool2 = "echo Python is already installed, skipping...";
-            if (IsVsBuildToolsInstalled())
-                tool1 = "echo Vs Build Tools is already installed, skipping...";
+            if (!ignoreInstalledCheck)
+            {
+                if (IsGitInstalled())
+                    tool3 = "echo Git is already installed, skipping...";
+                if (IsPythonInstalled())
+                    tool2 = "echo Python is already installed, skipping...";
+                if (IsVsBuildToolsInstalled())
+                    tool1 = "echo Vs Build Tools is already installed, skipping...";
+            }
 
             // build download command(s)
             string command = $"/C echo Download directory: {tmpDir} && echo.";
@@ -357,17 +405,21 @@ namespace OOOT_GUI
             command += @"&& echo. && echo Downloading 'Git-2.36.0-64-bit.exe' && echo. && " + tool3;
 
             // execute command(s)
-            CMD(command, tmpDir, true);
+            int exitCode = CMD(command, tmpDir, true);
+            if (WasProcessAborted(exitCode))
+                return false; // use canceled download, exit.
 
             // install tool after download, if set so
             if (installTools)
-                InstallTools(showMessages);
+                return InstallTools(showMessages);
+
+            return true;
         }
 
         /// <summary>
         /// Install build tools.
         /// </summary>
-        public static void InstallTools(bool showMessages)
+        public static bool InstallTools(bool showMessages)
         {
             bool git = IsGitInstalled();
             bool python = IsPythonInstalled();
@@ -378,7 +430,7 @@ namespace OOOT_GUI
             {
                 if (showMessages)
                     MessageBox.Show("All tools are already installed.");
-                return;
+                return true;
             }
 
             // get temp download path
@@ -386,7 +438,7 @@ namespace OOOT_GUI
             if (!Directory.Exists(tmpDir))
             {
                 MessageBox.Show($"Can't find temporary download directory for tools! ({tmpDir}", "Error!");
-                return;
+                return false;
             }
 
             string command = @"/C SET usermode=basic";
@@ -408,7 +460,10 @@ namespace OOOT_GUI
             else
                 command += @"&& echo. && echo (3/3) VS Build Tools is already installed, skipping... && echo.";
 
-            CMD(command, tmpDir, true);
+            // run command
+            int exitCode = CMD(command, tmpDir, true);
+
+            return WasProcessAborted(exitCode);
         }
 
         /// <summary>
@@ -448,7 +503,12 @@ namespace OOOT_GUI
 
             // download texture pack
             if (!System.IO.File.Exists(texturePackPath))
-                CMD($"/C echo Downloading texture pack from {texturePackUrl} && echo Downloading to: %cd% && echo. && curl -LJO {texturePackUrl}", oootReleasePath);
+            {
+                int exitCode = CMD($"/C echo Downloading texture pack from {texturePackUrl} && echo Downloading to: %cd% && echo. && curl -LJO {texturePackUrl}", oootReleasePath);
+                if (WasProcessAborted(exitCode))
+                    return; // user aborted downloading
+            }
+
 
             // extract texture pack
             if (System.IO.File.Exists(texturePackPath))
@@ -460,6 +520,17 @@ namespace OOOT_GUI
                 p.StartInfo.WorkingDirectory = oootReleasePath;
                 p.Start();
                 p.WaitForExit();
+
+                // exit if user has aborted process
+                int exitCode = p.ExitCode;
+                if (WasProcessAborted(exitCode))
+                {
+                    // delete .7zip file
+                    if (System.IO.File.Exists(texturePackPath))
+                        System.IO.File.Delete(texturePackPath);
+
+                    return;
+                }
 
                 if (System.IO.File.Exists(htsPath)) // installed texture pack succesfully
                 {
@@ -484,7 +555,7 @@ namespace OOOT_GUI
             }
         }
 
-        public static void CMD(string command, string workingDir = "", bool showWindow = true)
+        public static int CMD(string command, string workingDir = "", bool showWindow = true)
         {
             Process p = new Process();
             p.StartInfo.FileName = "CMD.exe";
@@ -494,11 +565,12 @@ namespace OOOT_GUI
             p.StartInfo.CreateNoWindow = !showWindow;
             p.Start();
             p.WaitForExit();
+            return p.ExitCode;
         }
 
-        public static void CMD(string command, bool showWindow)
+        public static int CMD(string command, bool showWindow)
         {
-            CMD(command, "", showWindow);
+            return CMD(command, "", showWindow);
         }
 
         public static bool DoesRepositoryExist()
@@ -652,6 +724,14 @@ namespace OOOT_GUI
             }
         }
 
+        public static bool WasProcessAborted(int exitCode)
+        {
+            bool result = (exitCode == -1073741510);
+            if (result)
+                MessageBox.Show("Process aborted!");
+            return result;
+        }
+
         /// <summary>
         /// Parse all branch names from file 'ooot/git/packed-refs'
         /// </summary>
@@ -715,12 +795,12 @@ namespace OOOT_GUI
             return data[0].Replace("ref: refs/heads/", "");
         }
 
-        public static void LoadSettings()
+        public static bool LoadSettings()
         {
             string settingsFilepath = GetSettingsSavePath();
 
             if (!System.IO.File.Exists(settingsFilepath))
-                return;
+                return false;
 
             string[] settings = System.IO.File.ReadAllLines(settingsFilepath);
 
@@ -748,6 +828,8 @@ namespace OOOT_GUI
                 else
                     Form1.form1.ChangeTheme(Form1.form1.CurrentTheme);
             }
+
+            return true;
         }
 
         public static void SaveSettings(string romVersion = "PAL_1.0", string extractAssets = "True")
