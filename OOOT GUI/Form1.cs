@@ -322,6 +322,16 @@ namespace OOOT_GUI
             MessageBox.Show(text, "Status");
         }
 
+        private void brightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeTheme(Theme.Bright);
+        }
+
+        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ChangeTheme(Theme.Dark);
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Builder.SaveSettings(Builder.GetRomVersion(IsEurMqd()), checkBox1.Checked.ToString());
@@ -347,14 +357,19 @@ namespace OOOT_GUI
             // update UI
             UpdateUI();
 
+            // get rom settings
+            bool isEurMqd = IsEurMqd();
+            string romVersion = Builder.GetRomVersion(isEurMqd);
+            string romeFilename = Builder.GetRomFilename(isEurMqd);
+
             // copy rom
-            Builder.CopyRom(Builder.GetRomFilename(IsEurMqd()), Builder.GetRomVersion(IsEurMqd()));
+            Builder.CopyRom(romeFilename, romVersion);
 
             // extract assets
-            Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd()));
+            Builder.ExtractAssets(romVersion);
 
             // build
-            Builder.Build(IsEurMqd());
+            Builder.Build(isEurMqd);
         }
 
         public void UpdateUI(object sender, EventArgs e)
@@ -399,7 +414,7 @@ namespace OOOT_GUI
             if (string.IsNullOrEmpty(commit) || string.IsNullOrEmpty(date))
                 return errorString;
 
-            // early commit id only return, if set sot
+            // early commit id only return, if set so
             if (returnCommitIdOnly)
                 return commit;
 
@@ -433,17 +448,21 @@ namespace OOOT_GUI
             else if (romVersion == "EUR_MQD")
                 isEurMqd = true;
 
-            // check if rom is in oot/roms folder, or copy if needed
+            // update rom version    
+            romVersion = Builder.GetRomVersion(isEurMqd);
+   
+            // check if rom is in oot/roms folder, or copy from Builder if needed
             bool value = Builder.IsRomInRomsFolder(isEurMqd, false);
             if (!value)
             {
-                value = !string.IsNullOrEmpty(Builder.GetRomFilename(isEurMqd));
+                string romFilename = Builder.GetRomFilename(isEurMqd);
+                value = !string.IsNullOrEmpty(romFilename);
                 if (value)
-                    Builder.CopyRom(Builder.GetRomFilename(isEurMqd), Builder.GetRomVersion(isEurMqd), showErrorMessage);
+                    Builder.CopyRom(romFilename, romVersion, showErrorMessage);
             }
 
             if (!value && showErrorMessage)
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{Builder.GetRomVersion(IsEurMqd())} folders!", "Error!");
+                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{romVersion} folders!", "Error!");
 
             return value;
         }
@@ -523,16 +542,6 @@ namespace OOOT_GUI
         public void SetExtractAssetsCheckbox(bool value)
         {
             checkBox1.Checked = value;
-        }
-
-        private void brightToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ChangeTheme(Theme.Bright);
-        }
-
-        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ChangeTheme(Theme.Dark);
         }
     }
 }

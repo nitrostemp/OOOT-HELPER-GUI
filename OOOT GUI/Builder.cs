@@ -178,16 +178,10 @@ namespace OOOT_GUI
             if (!IsRomInRomsFolder(isEurMqd))
             {
                 string romFileName = GetRomFilename(isEurMqd);
-                string romPath = Path.Combine(GetBuilderPath(), romFileName);
+                string romVersion = GetRomVersion(isEurMqd);
 
-                CopyRom(romFileName, romPath);
-
-                // no rom found from Builder folder, exit
-                if (string.IsNullOrEmpty(romFileName) || !System.IO.File.Exists(romPath))
-                {
-                    MessageBox.Show("No valid ROM found from OOOT or builder folder!", "Error!");
+                if (!CopyRom(romFileName, romVersion, true))
                     return;
-                }
             }
 
             string ootPath = GetOootPath();
@@ -219,7 +213,7 @@ namespace OOOT_GUI
                     return false;
             }
 
-            CMD($"/C python setup.py -c -b {romVersion}", GetOootPath(), true);
+            CMD($"/C setup.py -c -b {romVersion}", GetOootPath(), true);
 
             return true;
         }
@@ -306,21 +300,11 @@ namespace OOOT_GUI
         /// </summary>
         public static string GetCommitSummary()
         {
+            string oootPath = GetOootPath();
             string output = "";
-            if (Directory.Exists(GetOootPath()))
-            {
-                Process p = new Process();
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.FileName = "CMD.exe";
-                p.StartInfo.WorkingDirectory = Builder.GetOootPath();
-                p.StartInfo.Arguments = "/C git show --summary .";
-                p.Start();
 
-                output = p.StandardOutput.ReadToEnd();
-                p.WaitForExit();
-            }
+            if (Directory.Exists(oootPath))
+                output = GetCmdOutput("/C git show --summary .", oootPath);
 
             return output;
         }
@@ -528,17 +512,8 @@ namespace OOOT_GUI
             if (string.IsNullOrEmpty(oootPath) || !Directory.Exists(oootPath)) // does 'ooot' folder exist?
                 return false;
 
-            // get output from git summary in 'ooot' folder
-            Process p = new Process();
-            p.StartInfo.FileName = "CMD.exe";
-            p.StartInfo.Arguments = "/C git show --summary .";
-            p.StartInfo.WorkingDirectory = oootPath;
-            p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.Start();
-            string output = p.StandardOutput.ReadToEnd();
-            p.WaitForExit();
+            // get coutput from git summary in 'ooot' folder
+            string output = GetCmdOutput("/C git show --summary .", oootPath);
 
             // is 'ooot' folder a valid git repo?
             if (string.IsNullOrEmpty(output) || output.StartsWith("fatal:"))
@@ -619,7 +594,7 @@ namespace OOOT_GUI
                 {
                     string md5Hash = CalculateMD5(file);
 
-                    if (isEurMqd && Builder.Md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && Builder.Md5HashesPal.Contains(md5Hash))
+                    if (isEurMqd && Md5HashesEurMqd.Contains(md5Hash) || !isEurMqd && Md5HashesPal.Contains(md5Hash))
                         return true;
                 }
             }
