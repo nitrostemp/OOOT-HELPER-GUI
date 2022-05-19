@@ -155,9 +155,12 @@ namespace OOOT_GUI
         public static bool DeleteRepo()
         {
             string oootPath = GetOootPath();
+
+            Log.Message("Going to delete repository from: " + oootPath);
+
             if (!Directory.Exists(oootPath))
             {
-                MessageBox.Show($"Can't delete repository, because directory not found! {oootPath})", "Error!");
+                ShowError($"Can't delete repository, because directory not found! {oootPath})");
                 return false;
             }
 
@@ -173,15 +176,18 @@ namespace OOOT_GUI
 
                 if (!Directory.Exists(oootPath)) // success
                 {
+                    Log.Message($"Repository deleted ({oootPath})");
                     MessageBox.Show("Repository deleted!");
                     return true;
                 }
                 else // failure
                 {
-                    MessageBox.Show("Something went wrong when deleting the repository!", "Error!");
+                    ShowError("Something went wrong when deleting the repository!");
                     return false;
                 }
             }
+
+            Log.Message("Cancel deleting repository.");
 
             return false;
         }
@@ -555,7 +561,7 @@ namespace OOOT_GUI
             if (System.IO.File.Exists(htsPath))
             {
                 Log.Message("Texture pack is already installed.");
-                MessageBox.Show("Texture pack is already installed!");              
+                MessageBox.Show("Texture pack is already installed!");
                 return;
             }
 
