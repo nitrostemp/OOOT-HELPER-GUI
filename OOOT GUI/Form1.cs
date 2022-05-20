@@ -13,9 +13,10 @@ namespace OOOT_GUI
         // Forms
         public static Form1 form1;
         private SettingsForm settingsForm;
+        private LogForm logForm;
 
         // Theme Settings
-        public enum Theme { Bright, Dark, Custom };
+        public enum Theme { Bright, Dark };
         public Theme CurrentTheme = Theme.Bright;
         private Color ColorBack = Color.FromArgb(240, 240, 240);
         private Color ColorFore = Color.FromArgb(0, 0, 0);
@@ -35,10 +36,6 @@ namespace OOOT_GUI
                     ColorBack = Color.FromArgb(32, 33, 36);
                     ColorFore = Color.FromArgb(177, 177, 177);
                     break;
-                case Theme.Custom: // TODO: TEMP
-                    ColorBack = Color.FromArgb(32, 33, 36);
-                    ColorFore = Color.FromArgb(177, 177, 177);
-                    break;
                 default:
                     break;
             }
@@ -52,7 +49,7 @@ namespace OOOT_GUI
                 UpdateColorControls(c);
             }
 
-            // Form1 Menustrip
+            // Update Form1 Menustrip colors
             foreach (ToolStripMenuItem item in menuStrip1.Items)
             {
                 foreach (ToolStripMenuItem item2 in item.DropDownItems)
@@ -62,7 +59,7 @@ namespace OOOT_GUI
                 }
             }
 
-            // set theme selection menu items color
+            // Update MenuStrip theme selection menu items color
             darkToolStripMenuItem.BackColor = ColorBack;
             brightToolStripMenuItem.BackColor = ColorBack;
             darkToolStripMenuItem.ForeColor = ColorFore;
@@ -75,6 +72,18 @@ namespace OOOT_GUI
                 settingsForm.ForeColor = ColorFore;
 
                 foreach (Control c in settingsForm.Controls)
+                {
+                    UpdateColorControls(c);
+                }
+            }
+
+            // Update LogForm colors
+            if (logForm != null)
+            {
+                logForm.BackColor = ColorBack;
+                logForm.ForeColor = ColorFore;
+
+                foreach (Control c in logForm.Controls)
                 {
                     UpdateColorControls(c);
                 }
@@ -116,7 +125,7 @@ namespace OOOT_GUI
                 control.ForeColor = ColorFore;
             }
 
-            // make dark theme buttons and combobox darker
+            // make some dark theme elements darker
             if (CurrentTheme == Theme.Dark)
             {
                 int R = ColorBack.R - 7;
@@ -131,6 +140,9 @@ namespace OOOT_GUI
 
                 if (control is Button || control is ComboBox || control is MenuStrip)
                     control.BackColor = darkerColor;
+
+                if (control is TextBox || control is RichTextBox)
+                    control.BackColor = Color.Black;
             }
 
             foreach (Control subC in control.Controls)
@@ -148,50 +160,29 @@ namespace OOOT_GUI
         {
             form1 = this;
             settingsForm = new SettingsForm();
+            logForm = new LogForm();
             InitializeComponent();
-            Builder.LoadSettings();
+            if (!Builder.LoadSettings())
+                ChangeTheme(Theme.Dark); // set default theme
             UpdateUI();
         }
 
         private void button5_Click(object sender, EventArgs e) // Compile
         {
-            // check if vs build tools install processes exist
-            bool block = false;
-            Process[] vsProcesses = Process.GetProcesses();
-            foreach (Process p in vsProcesses)
-            {
-                if (p.MainWindowTitle.Contains("Visual Studio Installer"))
-                    block = true;
-                else if (p.ProcessName == "vs_BuildTools")
-                    block = true;
-                else if (p.ProcessName == "vs_setup_bootstrapper")
-                    block = true;
-            }
-
-            // vs build tools processes detected, can't compile yet
-            if (block)
-            {
-                DialogResult result = MessageBox.Show("Wait for VS Build Tools to install before compiling.", "Error!", MessageBoxButtons.AbortRetryIgnore);
-                if (result == DialogResult.Abort)
-                    return;
-                if (result == DialogResult.Retry)
-                {
-                    button5_Click(sender, e);
-                    return;
-                }
-            }
-
             // no rom found
             if (!IsValidRomAvailable(true))
                 return;
 
+            bool isEurMqd = IsEurMqd();
+            string romVersion = Builder.GetRomVersion(isEurMqd);
+
             // (optional) extract assets
             if (checkBox1.Checked)
-                if (!Builder.ExtractAssets(Builder.GetRomVersion(IsEurMqd())))
+                if (!Builder.ExtractAssets(romVersion))
                     return;
 
             // build OOOT
-            Builder.Build(IsEurMqd());
+            Builder.Build(isEurMqd);
         }
 
         private void button8_Click(object sender, EventArgs e) // All-in-one
@@ -239,7 +230,7 @@ namespace OOOT_GUI
 
         private void downloadToolsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.DownloadTools(false, true);
+            Builder.DownloadTools(false, true, true);
         }
 
         private void installToolsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -249,7 +240,13 @@ namespace OOOT_GUI
 
         private void copyRomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Builder.CopyRom(Builder.GetRomFilename(IsEurMqd()), Builder.GetRomVersion(IsEurMqd()));
+            // get rom settings
+            bool isEurMqd = IsEurMqd();
+            string romVersion = Builder.GetRomVersion(isEurMqd);
+            string romFilename = Builder.GetRomFilename(isEurMqd);
+
+            // copy rom
+            Builder.CopyRom(romFilename, romVersion);
         }
 
         private void extractAssetsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -270,6 +267,7 @@ namespace OOOT_GUI
         private void pathToolStripMenuItem_Click(object sender, EventArgs e)
         {
             settingsForm.Show();
+            settingsForm.WindowState = FormWindowState.Normal;
         }
 
         private void gitHubToolStripMenuItem_Click(object sender, EventArgs e)
@@ -332,6 +330,12 @@ namespace OOOT_GUI
             ChangeTheme(Theme.Dark);
         }
 
+        private void viewLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            logForm.Show();
+            logForm.WindowState = FormWindowState.Normal;
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             Builder.SaveSettings(Builder.GetRomVersion(IsEurMqd()), checkBox1.Checked.ToString());
@@ -342,34 +346,66 @@ namespace OOOT_GUI
         /// </summary>
         private void DoFullSetup(bool installTools)
         {
+            // get rom settings
+            bool isEurMqd = IsEurMqd();
+            string romVersion = Builder.GetRomVersion(isEurMqd);
+            string romFilename = Builder.GetRomFilename(isEurMqd);
+
+            Log.Message("======== Do Full Setup ======== ");
+            Log.Message($"ROM Version: {romVersion}, Filename: {romFilename}\n");
+
             // no rom found
-            if (!IsValidRomAvailable(false))
+            if (!IsValidRomAvailable(false, romVersion))
+            {
+                Builder.ShowError($"No valid ROM found from Builder or OOOT/roms/{romVersion} folders!");
+                EndFullSetupLog(false);
                 return;
+            }
 
             // download/install tools
-            if (installTools)
-                Builder.DownloadTools(true, true);
+            if (installTools && !Builder.IsAllToolsInstalled())
+            {
+                if (!Builder.DownloadTools(true, true))
+                {
+                    EndFullSetupLog(false);
+                    return;
+                }
+            }
+            else
+            {
+                Log.Message("Tools are already installed.");
+            }
 
             // clone repo
             if (!Builder.Clone())
+            {
+                EndFullSetupLog(false);
                 return;
+            }
 
             // update UI
             UpdateUI();
 
-            // get rom settings
-            bool isEurMqd = IsEurMqd();
-            string romVersion = Builder.GetRomVersion(isEurMqd);
-            string romeFilename = Builder.GetRomFilename(isEurMqd);
-
             // copy rom
-            Builder.CopyRom(romeFilename, romVersion);
+            Builder.CopyRom(romFilename, romVersion);
 
             // extract assets
-            Builder.ExtractAssets(romVersion);
+            if (!Builder.ExtractAssets(romVersion))
+            {
+                EndFullSetupLog(false);
+                return;
+            }
 
             // build
             Builder.Build(isEurMqd);
+
+            EndFullSetupLog(true);
+        }
+
+        private void EndFullSetupLog(bool completed)
+        {
+            Log.Message(completed ? "Full Setup completed!" : "Full Setup failed!");
+            Log.Message("===============================\n");
         }
 
         public void UpdateUI(object sender, EventArgs e)
@@ -450,7 +486,7 @@ namespace OOOT_GUI
 
             // update rom version    
             romVersion = Builder.GetRomVersion(isEurMqd);
-   
+
             // check if rom is in oot/roms folder, or copy from Builder if needed
             bool value = Builder.IsRomInRomsFolder(isEurMqd, false);
             if (!value)
@@ -462,7 +498,7 @@ namespace OOOT_GUI
             }
 
             if (!value && showErrorMessage)
-                MessageBox.Show($"No valid ROM found from Builder or OOOT/roms/{romVersion} folders!", "Error!");
+                Builder.ShowError($"No valid ROM found from Builder or OOOT/roms/{romVersion} folders!");
 
             return value;
         }
