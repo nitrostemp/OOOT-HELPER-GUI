@@ -162,7 +162,7 @@
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.pathToolStripMenuItem.Text = "Paths";
             this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
             // 
@@ -172,7 +172,7 @@
             this.brightToolStripMenuItem,
             this.darkToolStripMenuItem});
             this.setThemeToolStripMenuItem.Name = "setThemeToolStripMenuItem";
-            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setThemeToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.setThemeToolStripMenuItem.Text = "Set Theme";
             // 
             // brightToolStripMenuItem
@@ -192,7 +192,7 @@
             // viewLogToolStripMenuItem
             // 
             this.viewLogToolStripMenuItem.Name = "viewLogToolStripMenuItem";
-            this.viewLogToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewLogToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
             this.viewLogToolStripMenuItem.Text = "View Log";
             this.viewLogToolStripMenuItem.Click += new System.EventHandler(this.viewLogToolStripMenuItem_Click);
             // 
@@ -392,7 +392,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "OOOT BUILD GUI ver 0.6";
+            this.Text = "OOOT BUILD GUI ver 0.65";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();

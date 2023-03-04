@@ -472,7 +472,7 @@ namespace OOOT_GUI
             }
 
             // create download commands for tools
-            string tool1 = "curl -LJO https://aka.ms/vs/17/release/vs_BuildTools.exe";
+            string tool1 = "curl -LJO https://download.visualstudio.microsoft.com/download/pr/50e007f5-f272-4bc3-a6b8-717859dae1ee/86a00d07bc02ba9ba9fe81353d4c62b65379625aac1dc9cbe3b58d9ff48cb6f2/vs_BuildTools.exe";
             string tool2 = "curl -LJO https://www.python.org/ftp/python/3.10.4/python-3.10.4-amd64.exe";
             string tool3 = "curl -LJO https://github.com/git-for-windows/git/releases/download/v2.36.0.windows.1/Git-2.36.0-64-bit.exe";
 
