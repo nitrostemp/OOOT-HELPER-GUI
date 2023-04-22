@@ -1,0 +1,17 @@
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\bin\Debug\Tools\compile.bat
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\bin\Debug\Tools\vstoolsinstalled.bat
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\bin\Debug\Tools\7zr.exe
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\bin\Debug\OOOT GUI.exe.config
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\bin\Debug\OOOT GUI.exe
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\bin\Debug\OOOT GUI.pdb
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.AssemblyReference.cache
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\Interop.IWshRuntimeLibrary.dll
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.ResolveComReference.cache
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT_GUI.Form1.resources
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT_GUI.LogForm.resources
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT_GUI.Properties.Resources.resources
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT_GUI.SettingsForm.resources
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.GenerateResource.cache
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT GUI.csproj.CoreCompileInputs.cache
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT GUI.exe
+C:\Users\dgran\OOOT-HELPER-GUI\OOOT GUI\obj\Debug\OOOT GUI.pdb

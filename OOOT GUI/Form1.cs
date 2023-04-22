@@ -579,5 +579,10 @@ namespace OOOT_GUI
         {
             checkBox1.Checked = value;
         }
+
+        private void groupBox3_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }

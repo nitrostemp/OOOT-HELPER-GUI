@@ -577,7 +577,7 @@ namespace OOOT_GUI
             // get paths and urls
             string oootReleasePath = Path.Combine(GetOootPath(), @"vs\Release");
             string toolPath = Path.Combine(GetBuilderPath(), @"Tools\7zr.exe");
-            string texturePackFilename = "oot-reloaded-v10.2.0-uhts-1080p.7z";
+            string texturePackFilename = "oot-reloaded-v10.3.0-uhts-1080p.7z";
             string texturePackPath = Path.Combine(oootReleasePath, texturePackFilename);
             string texturePackUrl = "https://evilgames.eu/texture-packs/files/" + texturePackFilename;
             string htsFilename = "THE LEGEND OF ZELDA_HIRESTEXTURES.hts";
